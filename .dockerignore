@@ -1,0 +1,13 @@
+.git/
+.gitignore
+.next
+.dockerignore
+Dockerfile
+docker-compose.yml
+.node_modules
+nginx/
+.eslint*
+.lintstaged*
+.prettier*
+commitlint.config*
+README.md

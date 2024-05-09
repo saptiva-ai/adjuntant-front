@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "commit",
+      "problemMatcher": [],
+      "label": "npm: commit",
+      "detail": "commit"
+    },
+    {
+      "type": "shell",
+      "command": "docker compose up -d",
+      "label": "docker compose up -d"
+    },
+    {
+      "type": "shell",
+      "command": "docker compose down -v",
+      "label": "docker compose down -v"
+    },
+
+    {
+      "type": "shell",
+      "command": "docker compose up -d --build",
+      "label": "docker compose up -d --build"
+    }
+  ]
+}
