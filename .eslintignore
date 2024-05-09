@@ -3,3 +3,4 @@ jest.config.ts
 postcss.config.js
 jest.setup.ts
 playwright.config.ts
+commitlint.config.js
