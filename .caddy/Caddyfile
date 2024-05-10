@@ -4,6 +4,11 @@ localhost:80 {
 		file_server
 	}
 
+	handle_path /favicon.ico {
+		root * /public/ico/favicon.ico
+		file_server
+	}
+
 	reverse_proxy /_next/* "adjuntant-front:3000"
 	reverse_proxy / "adjuntant-front:3000"
 }
