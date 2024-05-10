@@ -11,18 +11,26 @@
     {
       "type": "shell",
       "command": "docker compose up -d",
-      "label": "docker compose up -d"
+      "label": "docker compose up -d",
+      "problemMatcher": []
     },
     {
       "type": "shell",
       "command": "docker compose down -v",
-      "label": "docker compose down -v"
+      "label": "docker compose down -v",
+      "problemMatcher": []
     },
-
+    {
+      "type": "shell",
+      "command": "docker compose down -v && docker compose up -d",
+      "label": "docker down and up",
+      "problemMatcher": []
+    },
     {
       "type": "shell",
       "command": "docker compose up -d --build",
-      "label": "docker compose up -d --build"
+      "label": "docker compose up -d --build",
+      "problemMatcher": []
     }
   ]
 }

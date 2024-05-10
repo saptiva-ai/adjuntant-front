@@ -1,0 +1,4 @@
+localhost:80 {
+	reverse_proxy / "adjuntant-front:3000"
+  reverse_proxy /public/* "adjuntant-front:3000"
+}
