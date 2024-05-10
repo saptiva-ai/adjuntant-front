@@ -2,6 +2,22 @@ services:
   adjuntant-front:
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./next.Dockerfile
     ports:
       - 3000:3000
+  caddy:
+    image: caddy:2.7.6
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./public:/public
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
