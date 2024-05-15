@@ -7,5 +7,6 @@
   "jsxSingleQuote": true,
   "jsxBracketSameLine": false,
   "arrowParens": "avoid",
+  "tailwindFunctions": ["clsx"],
   "plugins": ["prettier-plugin-tailwindcss"]
 }
