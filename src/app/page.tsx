@@ -1,6 +1,7 @@
+"use client"
+
+import * as R from "ramda"
 import Dropdown from "@/components/Dropdown"
-import Image from "next/image"
-import ThemeSwitcher from "@/components/ThemeSwitcher"
 import { useState } from "react"
 
 export default function Home() {
@@ -23,9 +24,22 @@ export default function Home() {
     },
   ]
 
+  const firstChoice = () => {
+    if (R.isEmpty(items)) throw new Error("Item array is empty")
+
+    const firstItem = items.slice(0, 1).map(({ key }) => key)
+
+    return firstItem
+  }
+  const [selectedKeys, setSelectedKeys] = useState(firstChoice)
+
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <Dropdown items={items}/>
+      <Dropdown
+        items={items}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
     </main>
   )
 }

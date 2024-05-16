@@ -1,6 +1,5 @@
 "use client"
 
-import * as R from "ramda"
 import {
   Button,
   DropdownItem,
@@ -8,7 +7,7 @@ import {
   DropdownTrigger,
   Dropdown as NextUiDropdown,
 } from "@nextui-org/react"
-import { useMemo, useState } from "react"
+import { Dispatch, SetStateAction, useMemo, useState } from "react"
 
 type Item = {
   key: string
@@ -17,24 +16,18 @@ type Item = {
 
 type DropdownProps = {
   items: Item[]
+  selectedKeys: string[]
+  onSelectionChange: Dispatch<SetStateAction<string[]>>
 }
 
 /**
- *
  * @link https://nextui.org/docs/components/dropdown
  */
-export default function Dropdown({ items }: DropdownProps) {
-  /**
-   * @returns An array with the first item
-   */
-  const firstChoice = () => {
-    if (R.isEmpty(items)) throw new Error("Item array is empty")
-
-    const firstItem = items.slice(0, 1).map(({ key }) => key)
-
-    return firstItem
-  }
-  const [selectedKeys, setSelectedKeys] = useState(firstChoice)
+export default function Dropdown({
+  items,
+  selectedKeys,
+  onSelectionChange,
+}: DropdownProps) {
   const selectedKey = useMemo(
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
     [selectedKeys],
@@ -53,7 +46,7 @@ export default function Dropdown({ items }: DropdownProps) {
         disallowEmptySelection
         selectionMode='single'
         selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys as () => void}
+        onSelectionChange={onSelectionChange as () => void}
         items={items}
       >
         {item => <DropdownItem key={item.key}>{item.label}</DropdownItem>}
