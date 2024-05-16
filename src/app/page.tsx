@@ -1,30 +1,30 @@
 import Dropdown from "@/components/Dropdown"
 import Image from "next/image"
 import ThemeSwitcher from "@/components/ThemeSwitcher"
+import { useState } from "react"
 
 export default function Home() {
   const items = [
     {
-      id: "new",
+      key: "new",
       label: "New file",
     },
     {
-      id: "copy",
+      key: "copy",
       label: "Copy link",
     },
     {
-      id: "edit",
+      key: "edit",
       label: "Edit file",
     },
     {
-      id: "delete",
+      key: "delete",
       label: "Delete file",
     },
   ]
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <ThemeSwitcher/>
       <Dropdown items={items}/>
     </main>
   )
