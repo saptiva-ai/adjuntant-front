@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {},
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui(),
+    require("tailwind-scrollbar")({
+      nocompatible: true,
+      preferredStrategy: "pseudoelements",
+    }),
+  ],
 }
 export default config
