@@ -24,6 +24,6 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ### API
 
-To mock API endpoints modify the `mocks/db.json` file. Please read more at [json-server](https://www.npmjs.com/package/json-server)
+To mock API endpoints modify the `mock/db.json` file. Please read more at [json-server](https://www.npmjs.com/package/json-server)
 
-Then run `npx json-server -p 3001 db.json`
+Then run `npx json-server -p 3001 mock/db.json`
