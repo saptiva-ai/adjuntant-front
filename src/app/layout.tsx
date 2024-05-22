@@ -16,7 +16,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' className="dark">
+    /**
+     * The following suppression warning was added because
+     * of next-themes.
+     *
+     * This property only applies one level deep, so it won't block hydration warnings on other elements.
+     *
+     * @link https://nextui.org/docs/customization/dark-mode#using-next-themes
+     * @link https://github.com/pacocoursey/next-themes
+     */
+    <html lang='en' className='dark' suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>

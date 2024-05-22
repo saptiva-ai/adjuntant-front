@@ -14,16 +14,16 @@ type ChatWindowProps = {
   messages: Message[]
   msgLimit: number
   onMsgLimitExceeded: (...args: any[]) => void
-  children: React.ReactNode
+  msgLimitExceededChildren: () => React.ReactNode
 }
 
 export default function ChatWindow({
   messages,
   msgLimit,
   onMsgLimitExceeded,
-  children,
+  msgLimitExceededChildren,
 }: ChatWindowProps) {
-  const msgLimitExceeded = messages.length > msgLimit
+  const msgLimitExceeded = messages.length >= msgLimit
   const msgsExists = messages.length > 0
 
   if (msgLimitExceeded) onMsgLimitExceeded()
@@ -63,7 +63,7 @@ export default function ChatWindow({
           </CardHeader>
         ))}
 
-      {msgLimitExceeded && children}
+      {msgLimitExceeded && msgLimitExceededChildren()}
     </Card>
   )
 }

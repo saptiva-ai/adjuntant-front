@@ -15,8 +15,9 @@ type ButtonProps = {
   }
   isHoveredChildren: () => React.ReactNode
   children: React.ReactNode
-  onClick?: React.MouseEventHandler<SVGSVGElement> | undefined
-} & Pick<NextUiButtonProps, "variant" | "size" | "isIconOnly">
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  isDisabledClass?: string
+} & Pick<NextUiButtonProps, "variant" | "size" | "isIconOnly" | "isDisabled">
 
 /**
  * @link https://heroicons.com/outline
@@ -30,22 +31,50 @@ export default function Button({
   isIconOnly,
   isHoveredChildren,
   children,
+  isDisabled,
+  isDisabledClass,
 }: ButtonProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPressedClass, setIsPressed] = useState(false)
 
   const iconClasses = clsx(
     className,
+    isDisabled && isDisabledClass,
     !isPressedClass && isPressedClasses?.false,
     isPressedClass && isPressedClasses?.true,
   )
+  const buttonOnClick: React.MouseEventHandler<HTMLButtonElement> = event => {
+    if (isDisabled) return
+    if (!onClick) return
 
+    onClick(event)
+  }
+  const buttonOnMouseEnter: React.MouseEventHandler<HTMLButtonElement> = () => {
+    if (isDisabled) return
+
+    setIsHovered(true)
+  }
+  const buttonOnMouseLeave: React.MouseEventHandler<HTMLButtonElement> = () => {
+    if (isDisabled) return
+
+    setIsHovered(false)
+  }
+  const buttonOnPressStart = () => {
+    if (isDisabled) return
+
+    setIsPressed(true)
+  }
+  const buttonOnMouseEnd = () => {
+    if (isDisabled) return
+
+    setIsPressed(false)
+  }
   const getIcon = () => {
     if (isHovered) {
       return <div className={iconClasses}>{isHoveredChildren()}</div>
     }
 
-    return <div className={iconClasses}>{children}</div>
+    return <div className={`${iconClasses}`}>{children}</div>
   }
 
   return (
@@ -53,10 +82,12 @@ export default function Button({
       isIconOnly={isIconOnly}
       variant={variant}
       size={size}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onPressStart={() => setIsPressed(true)}
-      onPressEnd={() => setIsPressed(false)}
+      isDisabled={isDisabled}
+      onMouseEnter={buttonOnMouseEnter}
+      onMouseLeave={buttonOnMouseLeave}
+      onPressStart={buttonOnPressStart}
+      onPressEnd={buttonOnMouseEnd}
+      onClick={buttonOnClick}
     >
       {getIcon()}
     </NextUiButton>

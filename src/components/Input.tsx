@@ -7,7 +7,13 @@ import React from "react"
 export default function Input(
   props: Pick<
     InputProps,
-    "type" | "placeholder" | "labelPlacement" | "endContent" | "onValueChange"
+    | "placeholder"
+    | "labelPlacement"
+    | "endContent"
+    | "onValueChange"
+    | "value"
+    | "onKeyDown"
+    | "disabled"
   >,
 ) {
   return <NextUiInput {...props} />
