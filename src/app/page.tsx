@@ -1,5 +1,3 @@
-import ChatWindow from "@/components/ChatWindow"
-import React from "react"
 import cslx from "clsx"
 
 export default function App() {
@@ -8,6 +6,6 @@ export default function App() {
   )
 
   return (
-    <ChatWindow></ChatWindow>
+    <div></div>
   )
 }
