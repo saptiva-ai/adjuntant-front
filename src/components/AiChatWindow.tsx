@@ -11,14 +11,20 @@ type ChatWindowProps = {
   onMsgLimitExceeded?: (...args: any[]) => void
   topCardHeaderChildren?: () => React.ReactNode
   msgLimitExceededChildren?: () => React.ReactNode
+  cardClasses?: string
+  msgClasses?: string
+  aiProfilePicUrl: string
 }
 
-export default function ChatWindow({
+export default function AiChatWindow({
   messages,
   msgLimit = Infinity,
   onMsgLimitExceeded = () => null,
   msgLimitExceededChildren = () => null,
   topCardHeaderChildren = () => null,
+  cardClasses,
+  msgClasses,
+  aiProfilePicUrl,
 }: ChatWindowProps) {
   if (msgLimit !== Infinity && !isEven(msgLimit))
     throw new Error("msgLimit must be an even number")
@@ -31,7 +37,7 @@ export default function ChatWindow({
   }, [msgLimitExceeded, onMsgLimitExceeded])
 
   return (
-    <Card className='flex h-96 w-96 flex-col gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scrollbar-track-gray-200 scrollbar-thumb-green-700 hover:scrollbar-thumb-green-500 active:scrollbar-thumb-green-400'>
+    <Card className={cardClasses}>
       {topCardHeaderChildren()}
 
       {msgsExists &&
@@ -43,11 +49,9 @@ export default function ChatWindow({
                 showFallback
                 radius='full'
                 size='sm'
-                src={msg.role === "ai" ? "/img/logoVA.webp" : undefined}
+                src={msg.role === "ai" ? aiProfilePicUrl : undefined}
               />
-              <p className='pt-1.5 text-small font-light leading-none text-default-600'>
-                {msg.text}
-              </p>
+              <p className={msgClasses}>{msg.text}</p>
             </div>
           </CardHeader>
         ))}

@@ -14,6 +14,7 @@ export default function Input(
     | "value"
     | "onKeyDown"
     | "disabled"
+    | "className"
   >,
 ) {
   return <NextUiInput {...props} />
