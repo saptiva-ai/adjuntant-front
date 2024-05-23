@@ -1,10 +1,11 @@
 "use client"
 
+import * as R from "ramda"
 import {
   Button as NextUiButton,
   ButtonProps as NextUiButtonProps,
 } from "@nextui-org/react"
-import React, { Fragment, useState } from "react"
+import React, { useState } from "react"
 import clsx from "clsx"
 
 type ButtonProps = {
@@ -70,6 +71,9 @@ export default function Button({
     setIsPressed(false)
   }
   const getIcon = () => {
+    if (R.isNil(isHoveredChildren))
+      return <div className={`${iconClasses}`}>{children}</div>
+
     if (isHovered) {
       return <div className={iconClasses}>{isHoveredChildren()}</div>
     }

@@ -1,32 +1,28 @@
 "use client"
 
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-} from "@nextui-org/react"
+import { Avatar, Card, CardHeader } from "@nextui-org/react"
 import { Message } from "@/types/message"
+import { useEffect } from "react"
 
 type ChatWindowProps = {
   messages: Message[]
-  msgLimit: number
-  onMsgLimitExceeded: (...args: any[]) => void
-  msgLimitExceededChildren: () => React.ReactNode
+  msgLimit?: number
+  onMsgLimitExceeded?: (...args: any[]) => void
+  msgLimitExceededChildren?: () => React.ReactNode
 }
 
 export default function ChatWindow({
   messages,
-  msgLimit,
-  onMsgLimitExceeded,
-  msgLimitExceededChildren,
+  msgLimit = Infinity,
+  onMsgLimitExceeded = () => null,
+  msgLimitExceededChildren = () => null,
 }: ChatWindowProps) {
-  const msgLimitExceeded = messages.length >= msgLimit
   const msgsExists = messages.length > 0
+  const msgLimitExceeded = messages.length >= msgLimit
 
-  if (msgLimitExceeded) onMsgLimitExceeded()
+  useEffect(() => {
+    if (msgLimitExceeded) onMsgLimitExceeded()
+  }, [msgLimitExceeded, onMsgLimitExceeded])
 
   return (
     <Card className='flex h-96 w-96 flex-col gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scrollbar-track-gray-200 scrollbar-thumb-green-700 hover:scrollbar-thumb-green-500 active:scrollbar-thumb-green-400'>
