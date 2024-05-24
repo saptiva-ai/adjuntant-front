@@ -11,6 +11,7 @@ import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline"
 import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid"
 import { Message } from "@/types/message"
 import Slider from "@/components/Slider"
+import TextArea from "@/components/TextArea"
 import { v4 as uuidv4 } from "uuid"
 
 export default function Playground() {
@@ -18,6 +19,9 @@ export default function Playground() {
   const [query, setQuery] = useState("")
   const [inputIsDisabled, setInputIsDisabled] = useState(false)
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
+  const [textAreaValue, setTextAreaValue] = useState("")
+  const maxTextAreaChars = 10
+  const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
   const dropdownItems = [
     {
       key: "new",
@@ -36,15 +40,8 @@ export default function Playground() {
       label: "Delete file",
     },
   ]
-  const firstDropdownChoice = () => {
-    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key)
-
-    return firstItem
-  }
-  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
-
   const sendMsg = async (text: string) => {
-    if (inputIsDisabled || buttonIsDisabled) return
+    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
     if (R.isEmpty(text)) return
 
     setQuery("")
@@ -63,6 +60,12 @@ export default function Playground() {
 
     setMessages(prevMsgs => [...prevMsgs, newMsg, fakeAiResponse])
   }
+  const firstDropdownChoice = () => {
+    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key)
+
+    return firstItem
+  }
+  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
   const inputHandleKeyDown = async (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent,
   ) => {
@@ -76,7 +79,7 @@ export default function Playground() {
     }
   }
   const buttonOnClick = async () => {
-    if (inputIsDisabled || buttonIsDisabled) return
+    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
 
     await sendMsg(query)
   }
@@ -127,7 +130,7 @@ export default function Playground() {
           placeholder='Escribe tu pregunta'
           onKeyDown={inputHandleKeyDown}
           value={query}
-          disabled={inputIsDisabled}
+          isDisabled={inputIsDisabled || textAreaIsInvalid}
           endContent={
             <Button
               className='data-[disabled=true]:opacity-25 hover:cursor-pointer'
@@ -173,6 +176,15 @@ export default function Playground() {
             defaultValue={2000}
           />
         </Card>
+
+        <TextArea
+          value={textAreaValue}
+          onValueChange={setTextAreaValue}
+          isInvalid={textAreaIsInvalid}
+          label='Instrucciones'
+          description='Ingresa instrucciones como contexto adicional'
+          errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
+        />
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ export default function Input(
     | "onValueChange"
     | "value"
     | "onKeyDown"
-    | "disabled"
+    | "isDisabled"
     | "className"
   >,
 ) {
