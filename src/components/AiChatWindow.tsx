@@ -14,6 +14,8 @@ type ChatWindowProps = {
   cardClasses?: string
   msgClasses?: string
   aiProfilePicUrl: string
+  isLoadingResponse?: boolean
+  isLoadingContent?: () => React.ReactNode
 }
 
 export default function AiChatWindow({
@@ -25,6 +27,8 @@ export default function AiChatWindow({
   cardClasses,
   msgClasses,
   aiProfilePicUrl,
+  isLoadingResponse = false,
+  isLoadingContent = () => null,
 }: ChatWindowProps) {
   if (msgLimit !== Infinity && !isEven(msgLimit))
     throw new Error("msgLimit must be an even number")
@@ -55,6 +59,8 @@ export default function AiChatWindow({
             </div>
           </CardHeader>
         ))}
+
+      {isLoadingResponse && isLoadingContent()}
 
       {msgLimitExceeded && msgLimitExceededChildren()}
     </Card>
