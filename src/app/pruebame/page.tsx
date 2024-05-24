@@ -2,7 +2,7 @@
 
 import * as R from "ramda"
 import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useState } from "react"
+import { KeyboardEvent, useEffect, useState } from "react"
 import AiChatWindow from "@/components/AiChatWindow"
 import Button from "@/components/Button"
 import Dropdown from "@/components/Dropdown"
@@ -11,7 +11,9 @@ import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline"
 import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid"
 import { Message } from "@/types/message"
 import Slider from "@/components/Slider"
+import Spinner from "@/components/Spinner"
 import TextArea from "@/components/TextArea"
+import useAiResponse from "@/hooks/useAiResponse"
 import { v4 as uuidv4 } from "uuid"
 
 export default function Playground() {
@@ -21,6 +23,7 @@ export default function Playground() {
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
   const [textAreaValue, setTextAreaValue] = useState("")
   const [sliderValue, setSliderValue] = useState(2000)
+  const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
   const dropdownItems = [
     {
       key: "new",
@@ -47,25 +50,42 @@ export default function Playground() {
   const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
   const maxTextAreaChars = 250
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
+  useAiResponse(
+    query,
+    chatWindowMsgIsLoading,
+    response => {
+      setChatWindowMsgIsLoading(false)
+      setMessages(prevMsgs => [
+        ...prevMsgs,
+        { id: uuidv4(), role: "ai", text: response },
+      ])
+    },
+    () => {
+      setChatWindowMsgIsLoading(false)
+      setMessages(prevMsgs => [
+        ...prevMsgs,
+        {
+          id: uuidv4(),
+          role: "ai",
+          text: "Hubo un error al procesar la respuesta",
+        },
+      ])
+    },
+  )
   const sendMsg = async (text: string) => {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
     if (R.isEmpty(text)) return
 
     setQuery("")
 
-    const fakeAiResponse: Message = {
-      id: uuidv4(),
-      role: "ai",
-      text: "Some fake response",
-    }
-
-    const newMsg: Message = {
+    const userMsg: Message = {
       id: uuidv4(),
       role: "human",
       text,
     }
 
-    setMessages(prevMsgs => [...prevMsgs, newMsg, fakeAiResponse])
+    setMessages(prevMsgs => [...prevMsgs, userMsg])
+    setChatWindowMsgIsLoading(true)
   }
   const inputHandleKeyDown = async (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent,
@@ -97,7 +117,7 @@ export default function Playground() {
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           messages={messages}
-          msgLimit={4}
+          msgLimit={100}
           onMsgLimitExceeded={chatWindowOnMsgLmtExceeded}
           topCardHeaderChildren={() => (
             <CardHeader>
@@ -123,6 +143,8 @@ export default function Playground() {
               </p>
             </CardFooter>
           )}
+          isLoadingResponse={chatWindowMsgIsLoading}
+          isLoadingContent={() => <Spinner />}
         ></AiChatWindow>
 
         <Input
@@ -164,7 +186,7 @@ export default function Playground() {
             buttonClassName='capitalize w-full lg:text-left'
             items={dropdownItems}
             selectedKeys={selectedKeys}
-            selectionMode="single"
+            selectionMode='single'
             onSelectionChange={setSelectedKeys as () => void}
             dropdownMenuClasses='text-left'
           ></Dropdown>
