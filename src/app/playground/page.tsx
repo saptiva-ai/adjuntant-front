@@ -20,8 +20,7 @@ export default function Playground() {
   const [inputIsDisabled, setInputIsDisabled] = useState(false)
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
   const [textAreaValue, setTextAreaValue] = useState("")
-  const maxTextAreaChars = 10
-  const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
+  const [sliderValue, setSliderValue] = useState(2000)
   const dropdownItems = [
     {
       key: "new",
@@ -40,6 +39,14 @@ export default function Playground() {
       label: "Delete file",
     },
   ]
+  const firstDropdownChoice = () => {
+    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key)
+
+    return firstItem
+  }
+  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
+  const maxTextAreaChars = 250
+  const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
   const sendMsg = async (text: string) => {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
     if (R.isEmpty(text)) return
@@ -60,12 +67,6 @@ export default function Playground() {
 
     setMessages(prevMsgs => [...prevMsgs, newMsg, fakeAiResponse])
   }
-  const firstDropdownChoice = () => {
-    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key)
-
-    return firstItem
-  }
-  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
   const inputHandleKeyDown = async (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent,
   ) => {
@@ -158,10 +159,12 @@ export default function Playground() {
             <p>Modelo:</p>
           </CardHeader>
           <Dropdown
+            aria-label='Menu de selección para modelo de IA'
             buttonVariant='bordered'
             buttonClassName='capitalize w-full lg:text-left'
             items={dropdownItems}
             selectedKeys={selectedKeys}
+            selectionMode="single"
             onSelectionChange={setSelectedKeys as () => void}
             dropdownMenuClasses='text-left'
           ></Dropdown>
@@ -173,12 +176,14 @@ export default function Playground() {
             step={1}
             minValue={0}
             maxValue={4000}
-            defaultValue={2000}
+            value={sliderValue}
+            onChange={setSliderValue as () => void}
           />
         </Card>
 
         <TextArea
           value={textAreaValue}
+          maxRows={11}
           onValueChange={setTextAreaValue}
           isInvalid={textAreaIsInvalid}
           label='Instrucciones'

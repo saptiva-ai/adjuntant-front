@@ -6,7 +6,13 @@ import React from "react"
 
 type SliderProps = Pick<
   NextUiSliderProps,
-  "label" | "step" | "maxValue" | "minValue" | "defaultValue" | "className" | "onChangeEnd"
+  | "label"
+  | "step"
+  | "maxValue"
+  | "minValue"
+  | "className"
+  | "onChange"
+  | "value"
 >
 
 /**
