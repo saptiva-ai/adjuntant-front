@@ -9,5 +9,6 @@
     { "id": "3", "text": "some message", "role": "ai" },
     { "id": "4", "text": "some message", "role": "human" },
     { "id": "5", "text": "some message", "role": "ai" }
-  ]
+  ],
+  "query": [{ "id": "1", "response": "fake response" }]
 }
