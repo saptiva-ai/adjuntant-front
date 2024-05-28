@@ -13,6 +13,12 @@
   "dependencies": {
     "@nextui-org/react": "^2.3.6",
     "@types/ramda": "^0.30.0",
+    "@uppy/core": "^3.11.3",
+    "@uppy/dashboard": "^3.8.3",
+    "@uppy/drag-drop": "^3.1.0",
+    "@uppy/file-input": "^3.1.2",
+    "@uppy/progress-bar": "^3.1.1",
+    "@uppy/react": "^3.3.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.2",
     "next": "14.2.3",

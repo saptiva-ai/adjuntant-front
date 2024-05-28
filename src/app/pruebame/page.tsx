@@ -2,7 +2,7 @@
 
 import * as R from "ramda"
 import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useEffect, useState } from "react"
+import { KeyboardEvent, useState } from "react"
 import AiChatWindow from "@/components/AiChatWindow"
 import Button from "@/components/Button"
 import Dropdown from "@/components/Dropdown"
@@ -117,7 +117,7 @@ export default function Playground() {
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           messages={messages}
-          msgLimit={100}
+          msgLimit={4}
           onMsgLimitExceeded={chatWindowOnMsgLmtExceeded}
           topCardHeaderChildren={() => (
             <CardHeader>

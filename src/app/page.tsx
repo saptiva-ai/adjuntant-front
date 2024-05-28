@@ -1,11 +1,14 @@
-import cslx from "clsx"
+"use client"
+
+import Dropzone from "@/components/Dropzone"
+import Uppy from "@uppy/core"
+import { useState } from "react"
 
 export default function App() {
-  const className = cslx(
-    "list-disc space-y-3 pl-5 text-slate-400 marker:text-sky-400",
-  )
-
+  const [uppy] = useState(() => new Uppy())
   return (
-    <div></div>
+    <div>
+      <Dropzone uppy={uppy}></Dropzone>
+    </div>
   )
 }
