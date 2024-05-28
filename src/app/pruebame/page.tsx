@@ -2,10 +2,11 @@
 
 import * as R from "ramda"
 import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useState } from "react"
+import { KeyboardEvent, useEffect, useState } from "react"
 import AiChatWindow from "@/components/AiChatWindow"
 import Button from "@/components/Button"
 import Dropdown from "@/components/Dropdown"
+import Dropzone from "@/components/Dropzone"
 import Input from "@/components/Input"
 import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline"
 import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid"
@@ -13,6 +14,7 @@ import { Message } from "@/types/message"
 import Slider from "@/components/Slider"
 import Spinner from "@/components/Spinner"
 import TextArea from "@/components/TextArea"
+import Uppy from "@uppy/core"
 import useAiResponse from "@/hooks/useAiResponse"
 import { v4 as uuidv4 } from "uuid"
 
@@ -24,6 +26,13 @@ export default function Playground() {
   const [textAreaValue, setTextAreaValue] = useState("")
   const [sliderValue, setSliderValue] = useState(2000)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
+  const [uppy] = useState(() => new Uppy())
+  uppy.setOptions({
+    restrictions: {
+      maxFileSize: 1000000,
+      maxNumberOfFiles: 1,
+    },
+  })
   const dropdownItems = [
     {
       key: "new",
@@ -205,13 +214,24 @@ export default function Playground() {
 
         <TextArea
           value={textAreaValue}
-          maxRows={11}
+          minRows={8}
+          maxRows={9}
           onValueChange={setTextAreaValue}
           isInvalid={textAreaIsInvalid}
           label='Instrucciones'
           description='Ingresa instrucciones como contexto adicional'
           errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
         />
+
+        <Card className='flex basis-2/12 flex-col justify-center lg:p-2'>
+          <Dropzone
+            uppy={uppy}
+            theme='dark'
+            showProgressDetails
+            width='100%'
+            height='100%'
+          />
+        </Card>
       </div>
     </div>
   )

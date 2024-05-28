@@ -17,6 +17,7 @@ export default function TextArea(
     | "errorMessage"
     | "isInvalid"
     | "maxRows"
+    | "minRows"
   >,
 ) {
   return <NextUiTextArea {...props} />
