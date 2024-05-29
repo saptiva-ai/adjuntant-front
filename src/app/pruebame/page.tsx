@@ -15,8 +15,12 @@ import Slider from "@/components/Slider"
 import Spinner from "@/components/Spinner"
 import TextArea from "@/components/TextArea"
 import Uppy from "@uppy/core"
+// @ts-ignore
+import UppySpanishLocale from "@uppy/locales/lib/es_ES.js"
 import useAiResponse from "@/hooks/useAiResponse"
 import { v4 as uuidv4 } from "uuid"
+
+const maxFileSize = 1000000
 
 export default function Playground() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -26,13 +30,28 @@ export default function Playground() {
   const [textAreaValue, setTextAreaValue] = useState("")
   const [sliderValue, setSliderValue] = useState(2000)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
-  const [uppy] = useState(() => new Uppy())
-  uppy.setOptions({
-    restrictions: {
-      maxFileSize: 1000000,
-      maxNumberOfFiles: 1,
-    },
-  })
+  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize))
+  const [uppy] = useState(
+    () =>
+      new Uppy({
+        locale: UppySpanishLocale,
+      }),
+  )
+  useEffect(() => {
+    uppy.setOptions({
+      restrictions: {
+        allowedFileTypes: [".pdf"],
+        maxFileSize,
+        maxNumberOfFiles: 1,
+      },
+    })
+
+    uppy.on("file-added", file => {
+      file.data.arrayBuffer().then(setFileBuffer)
+    })
+  }, [uppy])
+
+  // TODO - replace with model values obtained from the backend
   const dropdownItems = [
     {
       key: "new",
@@ -213,9 +232,10 @@ export default function Playground() {
         </Card>
 
         <TextArea
+          className='basis-5/12'
           value={textAreaValue}
-          minRows={8}
-          maxRows={9}
+          minRows={7}
+          maxRows={8}
           onValueChange={setTextAreaValue}
           isInvalid={textAreaIsInvalid}
           label='Instrucciones'
@@ -223,15 +243,14 @@ export default function Playground() {
           errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
         />
 
-        <Card className='flex basis-2/12 flex-col justify-center lg:p-2'>
-          <Dropzone
-            uppy={uppy}
-            theme='dark'
-            showProgressDetails
-            width='100%'
-            height='100%'
-          />
-        </Card>
+        <Dropzone
+          className='basis-3/12'
+          uppy={uppy}
+          theme='dark'
+          showProgressDetails
+          width='100%'
+          height='100%'
+        />
       </div>
     </div>
   )

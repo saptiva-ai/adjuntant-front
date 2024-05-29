@@ -14,5 +14,5 @@ type DashboardProps = {
  * @link https://uppy.io/docs/react/
  */
 export default function Dropzone(dashboardProps: DashboardProps) {
-  return <Dashboard {...dashboardProps}/>
+  return <Dashboard {...dashboardProps} />
 }
