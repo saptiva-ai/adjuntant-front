@@ -2,7 +2,7 @@
 
 import * as R from "ramda"
 import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useEffect, useState } from "react"
+import { KeyboardEvent, useCallback, useEffect, useState } from "react"
 import AiChatWindow from "@/components/AiChatWindow"
 import Button from "@/components/Button"
 import Dropdown from "@/components/Dropdown"
@@ -18,6 +18,7 @@ import Uppy from "@uppy/core"
 // @ts-ignore
 import UppySpanishLocale from "@uppy/locales/lib/es_ES.js"
 import useAiResponse from "@/hooks/useAiResponse"
+import useFetchDropdownItems from '@/hooks/useFetchDropdownItems';
 import { v4 as uuidv4 } from "uuid"
 
 const maxFileSize = 1000000
@@ -51,31 +52,20 @@ export default function Playground() {
     })
   }, [uppy])
 
-  // TODO - replace with model values obtained from the backend
-  const dropdownItems = [
-    {
-      key: "new",
-      label: "New file",
-    },
-    {
-      key: "copy",
-      label: "Copy link",
-    },
-    {
-      key: "edit",
-      label: "Edit file",
-    },
-    {
-      key: "delete",
-      label: "Delete file",
-    },
-  ]
-  const firstDropdownChoice = () => {
-    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key)
+  const dropdownItems = useFetchDropdownItems();
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-    return firstItem
-  }
-  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice)
+  const firstDropdownChoice = useCallback(() => {
+    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key);
+    return firstItem.length > 0 ? firstItem : [];
+  }, [dropdownItems]);
+
+  useEffect(() => {
+    if (dropdownItems.length > 0) {
+      setSelectedKeys(firstDropdownChoice());
+    }
+  }, [dropdownItems, firstDropdownChoice]);
+
   const maxTextAreaChars = 250
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
   useAiResponse(
@@ -158,7 +148,7 @@ export default function Playground() {
                   src='/img/logoVA.webp'
                 />
                 <p className='pt-1.5 text-small font-light leading-none text-default-600'>
-                  ¿Como puedo ayudarte hoy?
+                  ¿Cómo puedo ayudarte hoy?
                 </p>
               </div>
             </CardHeader>
@@ -224,8 +214,8 @@ export default function Playground() {
           <Slider
             label='Tokens'
             step={1}
-            minValue={0}
-            maxValue={4000}
+            minValue={50}
+            maxValue={2000}
             value={sliderValue}
             onChange={setSliderValue as () => void}
           />
