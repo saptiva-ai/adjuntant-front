@@ -18,18 +18,20 @@ import Uppy from "@uppy/core"
 // @ts-ignore
 import UppySpanishLocale from "@uppy/locales/lib/es_ES.js"
 import useAiResponse from "@/hooks/useAiResponse"
-import useFetchDropdownItems from '@/hooks/useFetchDropdownItems';
+import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid"
+
 
 const maxFileSize = 1000000
 
 export default function Playground() {
-  const [messages, setMessages] = useState<Message[]>([])
+  const { data: session } = useSession();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [query, setQuery] = useState("")
   const [inputIsDisabled, setInputIsDisabled] = useState(false)
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
   const [textAreaValue, setTextAreaValue] = useState("")
-  const [sliderValue, setSliderValue] = useState(2000)
+  const [sliderValue, setSliderValue] = useState(128)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
   const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize))
   const [uppy] = useState(
@@ -38,6 +40,8 @@ export default function Playground() {
         locale: UppySpanishLocale,
       }),
   )
+  const email = session?.user.email ?? "";
+
   useEffect(() => {
     uppy.setOptions({
       restrictions: {
@@ -52,34 +56,39 @@ export default function Playground() {
     })
   }, [uppy])
 
-  const dropdownItems = useFetchDropdownItems();
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-
-  const firstDropdownChoice = useCallback(() => {
+  const dropdownItems = [
+    {
+      key: "Mistral 7B",
+      label: "Mistral 7B",
+    },
+    {
+      key: "LLaMa2 7B",
+      label: "LLaMa2 7B",
+    },
+    {
+      key: "LLaMa3 8B",
+      label: "LLaMa3 8B",
+    },
+    {
+      key: "Phi 3",
+      label: "Phi 3",
+    },
+  ]
+  const firstDropdownChoice = () => {
     const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key);
-    return firstItem.length > 0 ? firstItem : [];
-  }, [dropdownItems]);
-
-  useEffect(() => {
-    if (dropdownItems.length > 0) {
-      setSelectedKeys(firstDropdownChoice());
-    }
-  }, [dropdownItems, firstDropdownChoice]);
-
+    return firstItem
+  }
+  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice()); 
   const maxTextAreaChars = 250
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
-  useAiResponse(
-    query,
-    chatWindowMsgIsLoading,
-    response => {
-      setChatWindowMsgIsLoading(false)
-      setMessages(prevMsgs => [
-        ...prevMsgs,
-        { id: uuidv4(), role: "ai", text: response },
-      ])
-    },
-    () => {
-      setChatWindowMsgIsLoading(false)
+  const selectedModel = selectedKeys.length > 0 ? selectedKeys[0] : "No selection";
+  // console.log(selectedModel)
+
+  useAiResponse({
+    modelName: selectedModel,
+    newTokens: sliderValue,
+    onFetchError: () => {
+      setChatWindowMsgIsLoading(false);
       setMessages(prevMsgs => [
         ...prevMsgs,
         {
@@ -87,14 +96,28 @@ export default function Playground() {
           role: "ai",
           text: "Hubo un error al procesar la respuesta",
         },
-      ])
+      ]);
     },
-  )
+    onFetchedSuccess: (response: string) => {
+    setChatWindowMsgIsLoading(false);
+    setMessages(prevMsgs => [
+      ...prevMsgs,
+      { 
+        id: uuidv4(), 
+        role: "ai", 
+        text: response 
+      },
+    ]);
+  },
+    shouldFetch: chatWindowMsgIsLoading,
+    userEmail: email,
+    userMessage: query,
+    
+  });
+
   const sendMsg = async (text: string) => {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
     if (R.isEmpty(text)) return
-
-    setQuery("")
 
     const userMsg: Message = {
       id: uuidv4(),
@@ -104,7 +127,9 @@ export default function Playground() {
 
     setMessages(prevMsgs => [...prevMsgs, userMsg])
     setChatWindowMsgIsLoading(true)
+    setQuery(text)
   }
+
   const inputHandleKeyDown = async (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent,
   ) => {
@@ -117,11 +142,13 @@ export default function Playground() {
         break
     }
   }
+  
   const buttonOnClick = async () => {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
 
     await sendMsg(query)
   }
+
   const chatWindowOnMsgLmtExceeded = () => {
     setInputIsDisabled(true)
     setButtonIsDisabled(true)
@@ -135,7 +162,7 @@ export default function Playground() {
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           messages={messages}
-          msgLimit={4}
+          msgLimit={6}
           onMsgLimitExceeded={chatWindowOnMsgLmtExceeded}
           topCardHeaderChildren={() => (
             <CardHeader>
@@ -207,6 +234,7 @@ export default function Playground() {
             selectionMode='single'
             onSelectionChange={setSelectedKeys as () => void}
             dropdownMenuClasses='text-left'
+            
           ></Dropdown>
         </Card>
 
