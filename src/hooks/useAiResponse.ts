@@ -36,6 +36,7 @@ export default function useAiResponse({
   modelName,
   newTokens,
   shouldFetch,
+  sysPrompt,
   userEmail,
   userMessage,  
   onFetchedSuccess,
@@ -44,6 +45,7 @@ export default function useAiResponse({
   modelName: string;
   newTokens: number;
   shouldFetch: boolean;
+  sysPrompt: string,
   userEmail: string;
   userMessage: string;
   
@@ -52,12 +54,12 @@ export default function useAiResponse({
 }): void {
   useEffect(() => {
     const fetchData = async () => {
-      if (shouldFetch && userEmail && userMessage) {
+      if (shouldFetch && userMessage) {
         try {
           const data = await fetcherWithArgs({
             modelName,
             newTokens,
-            sysPrompt: "System prompt text here",
+            sysPrompt,
             url: 'http://44.211.22.3:8000/api/chat',
             userEmail,
             userMessage,
@@ -70,5 +72,5 @@ export default function useAiResponse({
     };
 
     fetchData();
-  }, [shouldFetch, userMessage, userEmail, modelName, newTokens, onFetchedSuccess, onFetchError]);
+  }, [shouldFetch, userMessage, userEmail, modelName, newTokens, sysPrompt, onFetchedSuccess, onFetchError]);
 }

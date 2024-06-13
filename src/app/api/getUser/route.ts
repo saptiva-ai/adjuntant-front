@@ -1,16 +1,21 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from "next/server";
 import { authOptions } from "../../../../lib/authOptions";
 import { getServerSession } from "next-auth";
 
-export default async function GET() {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-        return NextResponse.json({ error: "Not authorized" }, { status:400 })
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method === 'GET') {
+      const session = await getServerSession(authOptions);
+  
+      if (!session) {
+        return NextResponse.json({ error: "Not authorized" }, { status: 400 });
+      }
+  
+      return NextResponse.json({ success: session }, { status: 200 });
     }
-
-    return NextResponse.json({ success: session }, { status:200 })
-    
-}
+  
+    return res.status(405).end(); 
+  }
+  
 
 

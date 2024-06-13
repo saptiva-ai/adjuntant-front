@@ -2,7 +2,7 @@
 
 import * as R from "ramda"
 import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useCallback, useEffect, useState } from "react"
+import { KeyboardEvent, useEffect, useRef, useState } from "react"
 import AiChatWindow from "@/components/AiChatWindow"
 import Button from "@/components/Button"
 import Dropdown from "@/components/Dropdown"
@@ -31,7 +31,7 @@ export default function Playground() {
   const [inputIsDisabled, setInputIsDisabled] = useState(false)
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
   const [textAreaValue, setTextAreaValue] = useState("")
-  const [sliderValue, setSliderValue] = useState(128)
+  const [sliderValue, setSliderValue] = useState(256)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
   const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize))
   const [uppy] = useState(
@@ -68,24 +68,24 @@ export default function Playground() {
     {
       key: "LLaMa3 8B",
       label: "LLaMa3 8B",
-    },
-    {
-      key: "Phi 3",
-      label: "Phi 3",
-    },
+    }
   ]
-  const firstDropdownChoice = () => {
-    const firstItem = dropdownItems.slice(0, 1).map(({ key }) => key);
-    return firstItem
-  }
-  const [selectedKeys, setSelectedKeys] = useState(firstDropdownChoice()); 
-  const maxTextAreaChars = 250
+
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+  const selectedValueRef = useRef<string>("Mistral 7B");
+
+  useEffect(() => {
+    if (selectedKeys.size > 0) {
+      const firstSelectedKey = selectedKeys.values().next().value;
+      selectedValueRef.current = firstSelectedKey || "Mistral 7B";
+    }
+  }, [selectedKeys]);
+  
+  const maxTextAreaChars = 256
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
-  const selectedModel = selectedKeys.length > 0 ? selectedKeys[0] : "No selection";
-  // console.log(selectedModel)
 
   useAiResponse({
-    modelName: selectedModel,
+    modelName: selectedValueRef.current,
     newTokens: sliderValue,
     onFetchError: () => {
       setChatWindowMsgIsLoading(false);
@@ -110,9 +110,9 @@ export default function Playground() {
     ]);
   },
     shouldFetch: chatWindowMsgIsLoading,
+    sysPrompt:textAreaValue,
     userEmail: email,
     userMessage: query,
-    
   });
 
   const sendMsg = async (text: string) => {
@@ -124,10 +124,10 @@ export default function Playground() {
       role: "human",
       text,
     }
+    setQuery(text)
 
     setMessages(prevMsgs => [...prevMsgs, userMsg])
     setChatWindowMsgIsLoading(true)
-    setQuery(text)
   }
 
   const inputHandleKeyDown = async (
@@ -136,6 +136,7 @@ export default function Playground() {
     switch (event.key) {
       case "Enter":
         await sendMsg(query)
+        setQuery("");
         break
 
       default:
@@ -147,6 +148,7 @@ export default function Playground() {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
 
     await sendMsg(query)
+    setQuery("");
   }
 
   const chatWindowOnMsgLmtExceeded = () => {
@@ -162,7 +164,7 @@ export default function Playground() {
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           messages={messages}
-          msgLimit={6}
+          msgLimit={10}
           onMsgLimitExceeded={chatWindowOnMsgLmtExceeded}
           topCardHeaderChildren={() => (
             <CardHeader>
@@ -242,8 +244,8 @@ export default function Playground() {
           <Slider
             label='Tokens'
             step={1}
-            minValue={50}
-            maxValue={2000}
+            minValue={100}
+            maxValue={1024}
             value={sliderValue}
             onChange={setSliderValue as () => void}
           />
@@ -271,5 +273,6 @@ export default function Playground() {
         />
       </div>
     </div>
-  )
-}
+  );
+};
+
