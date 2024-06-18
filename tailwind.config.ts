@@ -6,7 +6,6 @@ const config: Config = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
-  theme: {},
   darkMode: "class",
   plugins: [
     nextui(),
@@ -15,5 +14,13 @@ const config: Config = {
       preferredStrategy: "pseudoelements",
     }),
   ],
+  theme: {
+    extend: {
+      colors: {
+        saptivaGreen: '#4ef7d1',
+      },
+    },
+  },
 }
+
 export default config

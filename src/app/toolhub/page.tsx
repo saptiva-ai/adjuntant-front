@@ -21,11 +21,10 @@ import useAiResponse from "@/hooks/useAiResponse"
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid"
 
-
 const maxFileSize = 1000000
 
 export default function Playground() {
-  const { data: session } = useSession();
+  const { data: session } = useSession(); 
   const [messages, setMessages] = useState<Message[]>([]);
   const [query, setQuery] = useState("")
   const [inputIsDisabled, setInputIsDisabled] = useState(false)
@@ -68,6 +67,10 @@ export default function Playground() {
     {
       key: "LLaMa3 8B",
       label: "LLaMa3 8B",
+    },
+    {
+      key: "Phi 3",
+      label: "Phi 3"
     }
   ]
 
@@ -203,7 +206,7 @@ export default function Playground() {
           isDisabled={inputIsDisabled || textAreaIsInvalid}
           endContent={
             <Button
-              className='data-[disabled=true]:opacity-25 hover:cursor-pointer'
+              className='data-[disabled=true]:opacity-25 hover:cursor-pointer text-saptivaGreen'
               isPressedClasses={{
                 false: "h-6 w-6",
                 true: "h-5 w-5",
