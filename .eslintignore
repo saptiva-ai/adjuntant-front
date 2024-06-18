@@ -5,4 +5,3 @@ jest.setup.ts
 playwright.config.ts
 commitlint.config.js
 .dockerignore
-tailwind.config.ts
