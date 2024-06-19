@@ -12,6 +12,7 @@ interface FetcherParams {
   modelName: string;
   sysPrompt: string;
   newTokens: number;
+  file?: File;
 }
 
 const fetcherWithArgs = async ({
@@ -21,18 +22,28 @@ const fetcherWithArgs = async ({
   modelName,
   sysPrompt,
   newTokens,
+  file,
 }: FetcherParams): Promise<any> => {
-  const response = await axios.post(url, {
-    modelName,
-    newTokens,
-    sysPrompt,
-    userEmail,
-    userMessage,    
+  const formData = new FormData();
+  formData.append('modelName', modelName);
+  formData.append('newTokens', newTokens.toString());
+  formData.append('sysPrompt', sysPrompt);
+  formData.append('userEmail', userEmail);
+  formData.append('userMessage', userMessage);
+  if (file) {
+    formData.append('file', file);
+  }
+
+  const response = await axios.post(url, formData, {
+    headers: {
+      'Content-Type': 'mutipart-form-data',
+    },
   });
   return response.data;
 };
 
 export default function useAiResponse({
+  file,
   modelName,
   newTokens,
   shouldFetch,
@@ -42,6 +53,7 @@ export default function useAiResponse({
   onFetchedSuccess,
   onFetchError,
 }: {
+  file?: File;
   modelName: string;
   newTokens: number;
   shouldFetch: boolean;
@@ -72,5 +84,5 @@ export default function useAiResponse({
     };
 
     fetchData();
-  }, [shouldFetch, userMessage, userEmail, modelName, newTokens, sysPrompt, onFetchedSuccess, onFetchError]);
+  }, [shouldFetch, userMessage, userEmail, modelName, newTokens, sysPrompt, file, onFetchedSuccess, onFetchError]);
 }

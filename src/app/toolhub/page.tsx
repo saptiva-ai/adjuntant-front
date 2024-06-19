@@ -32,7 +32,8 @@ export default function Playground() {
   const [textAreaValue, setTextAreaValue] = useState("")
   const [sliderValue, setSliderValue] = useState(256)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
-  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize))
+  const [file, setFile] = useState<File | null>(null);
+  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
   const [uppy] = useState(
     () =>
       new Uppy({
@@ -50,10 +51,17 @@ export default function Playground() {
       },
     })
 
-    uppy.on("file-added", file => {
-      file.data.arrayBuffer().then(setFileBuffer)
-    })
-  }, [uppy])
+    uppy.on('file-added', (file) => {
+      if (file.data instanceof Blob) {
+        // Convertir Blob a File
+        const newFile = new File([file.data], file.name, { type: file.type });
+        setFile(newFile);
+      } else {
+        setFile(file.data as File);
+      }
+      file.data.arrayBuffer().then(setFileBuffer);
+    });
+  }, [uppy]);
 
   const dropdownItems = [
     {
@@ -88,6 +96,7 @@ export default function Playground() {
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
 
   useAiResponse({
+    file: file || undefined,
     modelName: selectedValueRef.current,
     newTokens: sliderValue,
     onFetchError: () => {
