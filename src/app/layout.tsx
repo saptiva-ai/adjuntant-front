@@ -3,10 +3,6 @@ import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import Providers from "./providers";
 import SessionWrapper from "@/components/SessionWrapper";
-import { getServerSession } from "next-auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { authOptions } from "../../lib/authOptions";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +16,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = (await getServerSession(authOptions)) as any;
-  const headerList = headers();
-  console.log("headerList", headerList);
-  const path = headerList.get("x-forwarded-path");
-  console.log("path", path);
-
-  console.log("session", session);
-
-  /*if (!session) {
-    redirect("/login?redirect=" + path);
-  }*/
-
   return (
     /**
      * The following suppression warning was added because
@@ -44,12 +28,8 @@ export default async function RootLayout({
      */
     <SessionWrapper>
       <html lang='en' className='dark' suppressHydrationWarning>
-        <body className={inter.className}>
-          <Providers>{children}</Providers>
-        </body>
+        <body className={inter.className}>{children}</body>
       </html>
     </SessionWrapper>
-
-  )
-
+  );
 }

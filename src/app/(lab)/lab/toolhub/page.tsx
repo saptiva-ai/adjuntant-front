@@ -1,44 +1,44 @@
-"use client"
+"use client";
 
-import * as R from "ramda"
-import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react"
-import { KeyboardEvent, useEffect, useRef, useState } from "react"
-import AiChatWindow from "@/components/AiChatWindow"
-import Button from "@/components/Button"
-import Dropdown from "@/components/Dropdown"
-import Dropzone from "@/components/Dropzone"
-import Input from "@/components/Input"
-import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline"
-import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid"
-import { Message } from "@/types/message"
-import Slider from "@/components/Slider"
-import Spinner from "@/components/Spinner"
-import TextArea from "@/components/TextArea"
-import Uppy from "@uppy/core"
+import * as R from "ramda";
+import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import AiChatWindow from "@/components/AiChatWindow";
+import Button from "@/components/Button";
+import Dropdown from "@/components/Dropdown";
+import Dropzone from "@/components/Dropzone";
+import Input from "@/components/Input";
+import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline";
+import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid";
+import { Message } from "@/types/message";
+import Slider from "@/components/Slider";
+import Spinner from "@/components/Spinner";
+import TextArea from "@/components/TextArea";
+import Uppy from "@uppy/core";
 // @ts-ignore
-import UppySpanishLocale from "@uppy/locales/lib/es_ES.js"
-import useAiResponse from "@/hooks/useAiResponse"
+import UppySpanishLocale from "@uppy/locales/lib/es_ES.js";
+import useAiResponse from "@/hooks/useAiResponse";
 import { useSession } from "next-auth/react";
-import { v4 as uuidv4 } from "uuid"
+import { v4 as uuidv4 } from "uuid";
 
-const maxFileSize = 1000000
+const maxFileSize = 1000000;
 
 export default function Playground() {
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [query, setQuery] = useState("")
-  const [inputIsDisabled, setInputIsDisabled] = useState(false)
-  const [buttonIsDisabled, setButtonIsDisabled] = useState(false)
-  const [textAreaValue, setTextAreaValue] = useState("")
-  const [sliderValue, setSliderValue] = useState(256)
-  const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
-  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize))
+  const [query, setQuery] = useState("");
+  const [inputIsDisabled, setInputIsDisabled] = useState(false);
+  const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const [sliderValue, setSliderValue] = useState(256);
+  const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false);
+  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
   const [uppy] = useState(
     () =>
       new Uppy({
         locale: UppySpanishLocale,
       }),
-  )
+  );
   const email = session?.user.email ?? "";
 
   useEffect(() => {
@@ -48,12 +48,12 @@ export default function Playground() {
         maxFileSize,
         maxNumberOfFiles: 1,
       },
-    })
+    });
 
     uppy.on("file-added", file => {
-      file.data.arrayBuffer().then(setFileBuffer)
-    })
-  }, [uppy])
+      file.data.arrayBuffer().then(setFileBuffer);
+    });
+  }, [uppy]);
 
   const dropdownItems = [
     {
@@ -70,9 +70,9 @@ export default function Playground() {
     },
     {
       key: "Phi 3",
-      label: "Phi 3"
-    }
-  ]
+      label: "Phi 3",
+    },
+  ];
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
   const selectedValueRef = useRef<string>("Mistral 7B");
@@ -83,9 +83,9 @@ export default function Playground() {
       selectedValueRef.current = firstSelectedKey || "Mistral 7B";
     }
   }, [selectedKeys]);
-  
-  const maxTextAreaChars = 256
-  const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
+
+  const maxTextAreaChars = 256;
+  const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars;
 
   useAiResponse({
     modelName: selectedValueRef.current,
@@ -102,62 +102,62 @@ export default function Playground() {
       ]);
     },
     onFetchedSuccess: (response: string) => {
-    setChatWindowMsgIsLoading(false);
-    setMessages(prevMsgs => [
-      ...prevMsgs,
-      { 
-        id: uuidv4(), 
-        role: "ai", 
-        text: response 
-      },
-    ]);
-  },
+      setChatWindowMsgIsLoading(false);
+      setMessages(prevMsgs => [
+        ...prevMsgs,
+        {
+          id: uuidv4(),
+          role: "ai",
+          text: response,
+        },
+      ]);
+    },
     shouldFetch: chatWindowMsgIsLoading,
-    sysPrompt:textAreaValue,
+    sysPrompt: textAreaValue,
     userEmail: email,
     userMessage: query,
   });
 
   const sendMsg = async (text: string) => {
-    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
-    if (R.isEmpty(text)) return
+    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return;
+    if (R.isEmpty(text)) return;
 
     const userMsg: Message = {
       id: uuidv4(),
       role: "human",
       text,
-    }
-    setQuery(text)
+    };
+    setQuery(text);
 
-    setMessages(prevMsgs => [...prevMsgs, userMsg])
-    setChatWindowMsgIsLoading(true)
-  }
+    setMessages(prevMsgs => [...prevMsgs, userMsg]);
+    setChatWindowMsgIsLoading(true);
+  };
 
   const inputHandleKeyDown = async (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent,
   ) => {
     switch (event.key) {
       case "Enter":
-        await sendMsg(query)
+        await sendMsg(query);
         setQuery("");
-        break
+        break;
 
       default:
-        break
+        break;
     }
-  }
-  
-  const buttonOnClick = async () => {
-    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return
+  };
 
-    await sendMsg(query)
+  const buttonOnClick = async () => {
+    if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return;
+
+    await sendMsg(query);
     setQuery("");
-  }
+  };
 
   const chatWindowOnMsgLmtExceeded = () => {
-    setInputIsDisabled(true)
-    setButtonIsDisabled(true)
-  }
+    setInputIsDisabled(true);
+    setButtonIsDisabled(true);
+  };
 
   return (
     <div className='grid h-screen lg:grid-cols-5 lg:gap-2 lg:p-1'>
@@ -206,7 +206,7 @@ export default function Playground() {
           isDisabled={inputIsDisabled || textAreaIsInvalid}
           endContent={
             <Button
-              className='data-[disabled=true]:opacity-25 hover:cursor-pointer text-saptivaGreen'
+              className='text-saptivaGreen data-[disabled=true]:opacity-25 hover:cursor-pointer'
               isPressedClasses={{
                 false: "h-6 w-6",
                 true: "h-5 w-5",
@@ -239,7 +239,6 @@ export default function Playground() {
             selectionMode='single'
             onSelectionChange={setSelectedKeys as () => void}
             dropdownMenuClasses='text-left'
-            
           ></Dropdown>
         </Card>
 
@@ -277,5 +276,4 @@ export default function Playground() {
       </div>
     </div>
   );
-};
-
+}

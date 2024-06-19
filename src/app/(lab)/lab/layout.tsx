@@ -1,4 +1,3 @@
-import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import Providers from "../../(lab)/lab/providers";
@@ -22,26 +21,13 @@ export default async function RootLayout({
 }) {
   const session = (await getServerSession(authOptions)) as any;
   const headerList = headers();
-  console.log("headerList", headerList);
   const path = headerList.get("x-forwarded-path");
-  console.log("path", path);
 
-  console.log("session", session);
-
-  /*if (!session) {
+  if (!session) {
     redirect("/login?redirect=" + path);
-  }*/
+  }
 
   return (
-    /**
-     * The following suppression warning was added because
-     * of next-themes.
-     *
-     * This property only applies one level deep, so it won't block hydration warnings on other elements.
-     *
-     * @link https://nextui.org/docs/customization/dark-mode#using-next-themes
-     * @link https://github.com/pacocoursey/next-themes
-     */
     <SessionWrapper>
       <html lang='en' className='dark' suppressHydrationWarning>
         <body className={inter.className}>
