@@ -4,6 +4,9 @@ import { NextAuthOptions } from "next-auth";
 import axios from "axios";
 
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
@@ -18,10 +21,10 @@ export const authOptions: NextAuthOptions = {
           if (response.status === 200) {
             token.accessToken = response.data.access_token;
           } else {
-            console.error("Error response from FastAPI:", response);
+            // console.error("Error response from FastAPI:", response);
           }
         } catch (error) {
-          console.error("Error sending token to FastAPI:", error);
+          // console.error("Error sending token to FastAPI:", error);
         }
       }
       return token;
@@ -30,6 +33,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
