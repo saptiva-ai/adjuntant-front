@@ -1,8 +1,8 @@
 import {
   Slider as NextUiSlider,
   SliderProps as NextUiSliderProps,
-} from "@nextui-org/react"
-import React from "react"
+} from "@nextui-org/react";
+import React from "react";
 
 type SliderProps = Pick<
   NextUiSliderProps,
@@ -10,14 +10,17 @@ type SliderProps = Pick<
   | "step"
   | "maxValue"
   | "minValue"
+  | "classNames"
   | "className"
   | "onChange"
   | "value"
->
+  | "color"
+  | "renderThumb"
+>;
 
 /**
  * @link https://nextui.org/docs/components/slider#installation
  */
 export default function Slider(props: SliderProps) {
-  return <NextUiSlider {...props} />
+  return <NextUiSlider {...props} />;
 }

@@ -1,23 +1,34 @@
 "use client";
 
 import * as R from "ramda";
-import { Avatar, Card, CardFooter, CardHeader } from "@nextui-org/react";
+import {
+  Avatar,
+  Card,
+  CardFooter,
+  CardHeader,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import AiChatWindow from "@/components/AiChatWindow";
 import Button from "@/components/Button";
-import Dropdown from "@/components/Dropdown";
 import Dropzone from "@/components/Dropzone";
 import Input from "@/components/Input";
 import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline";
 import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid";
 import { Message } from "@/types/message";
+import RobotIcon from "@/svg/RobotIcon/Robot_Icon";
 import Slider from "@/components/Slider";
 import Spinner from "@/components/Spinner";
 import TextArea from "@/components/TextArea";
+
 import Uppy from "@uppy/core";
+import WandMagicIcon from "@/svg/Wand_Magic_Icon/Wand_Magic_Icon";
 // @ts-ignore
+// eslint-disable-next-line sort-imports
 import UppySpanishLocale from "@uppy/locales/lib/es_ES.js";
 import useAiResponse from "@/hooks/useAiResponse";
+
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,6 +44,7 @@ export default function Playground() {
   const [sliderValue, setSliderValue] = useState(256);
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false);
   const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
+
   const [uppy] = useState(
     () =>
       new Uppy({
@@ -74,7 +86,9 @@ export default function Playground() {
     },
   ];
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+    new Set(["Mistral 7B"]),
+  );
   const selectedValueRef = useRef<string>("Mistral 7B");
 
   useEffect(() => {
@@ -160,10 +174,10 @@ export default function Playground() {
   };
 
   return (
-    <div className='grid h-screen lg:grid-cols-5 lg:gap-2 lg:p-1'>
-      <div className='flex flex-col gap-2 p-1 lg:col-span-4'>
+    <div className='grid h-screen lg:grid-cols-5 lg:gap-2 lg:p-2'>
+      <div className='flex max-h-screen flex-col gap-3 p-1 lg:col-span-4'>
         <AiChatWindow
-          cardClasses='flex flex-col gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scrollbar-track-gray-200 scrollbar-thumb-green-700 hover:scrollbar-thumb-green-500 active:scrollbar-thumb-green-400 basis-11/12'
+          cardClasses='flex flex-col p-3 min-h-60   gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scroll-smooth scrollbar-track-gray-200 scrollbar-thumb-teal-400 hover:scrollbar-thumb-teal-500 active:scrollbar-thumb-teal-400 basis-11/12'
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           messages={messages}
@@ -171,30 +185,59 @@ export default function Playground() {
           onMsgLimitExceeded={chatWindowOnMsgLmtExceeded}
           topCardHeaderChildren={() => (
             <CardHeader>
-              <div className='flex gap-1'>
-                <Avatar
-                  isBordered
-                  showFallback
-                  radius='full'
-                  size='sm'
-                  src='/img/logoVA.webp'
-                />
-                <p className='pt-1.5 text-small font-light leading-none text-default-600'>
-                  ¿Cómo puedo ayudarte hoy?
-                </p>
+              <div className='flex gap-3'>
+                <div className='flex-1 justify-items-center'>
+                  <Avatar
+                    isBordered
+                    showFallback
+                    radius='full'
+                    size='sm'
+                    src='/img/logoVA.webp'
+                  />
+                </div>
+                <div className='flex-2 text-justify'>
+                  <div className='leading-1.5 flex w-full  flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
+                    <p className='pt-1.5 text-small font-light leading-none text-default-600'>
+                      ¿Cómo puedo ayudarte hoy?
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardHeader>
           )}
           msgLimitExceededChildren={() => (
-            <CardFooter className='text-center text-red-500'>
-              <p>
-                Has llegado al limite de mensajes. Porfavor, refresca esta
-                página
-              </p>
-            </CardFooter>
+            <CardHeader>
+              <div className='flex gap-3 '>
+                <div className='flex-1 justify-items-center'>
+                  <Avatar
+                    isBordered
+                    showFallback
+                    radius='full'
+                    size='sm'
+                    src='/img/logoVA.webp'
+                  />
+                </div>
+                <div className='flex-2 text-justify'>
+                  <div className='leading-1.5 flex w-full flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
+                    <p className='pt-1.5 text-small font-light leading-none text-red-500'>
+                      Has llegado al limite de mensajes. Porfavor, refresca esta
+                      página
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
           )}
           isLoadingResponse={chatWindowMsgIsLoading}
-          isLoadingContent={() => <Spinner />}
+          isLoadingContent={() => (
+            <CardHeader>
+              <div className='flex w-full  justify-center gap-3'>
+                <div className='flex w-full '>
+                  <Spinner color='success' size='lg' className='w-full' />
+                </div>
+              </div>
+            </CardHeader>
+          )}
         ></AiChatWindow>
 
         <Input
@@ -203,7 +246,9 @@ export default function Playground() {
           placeholder='Escribe tu pregunta'
           onKeyDown={inputHandleKeyDown}
           value={query}
-          isDisabled={inputIsDisabled || textAreaIsInvalid}
+          isDisabled={
+            inputIsDisabled || textAreaIsInvalid || chatWindowMsgIsLoading
+          }
           endContent={
             <Button
               className='text-saptivaGreen data-[disabled=true]:opacity-25 hover:cursor-pointer'
@@ -216,7 +261,7 @@ export default function Playground() {
               isIconOnly
               isHoveredChildren={() => <MailIconSolid />}
               onClick={buttonOnClick}
-              isDisabled={buttonIsDisabled}
+              isDisabled={buttonIsDisabled || chatWindowMsgIsLoading}
               isDisabledClass='opacity-80'
             >
               <MailIconOutline />
@@ -226,35 +271,62 @@ export default function Playground() {
       </div>
 
       <div className='flex flex-col gap-3 lg:col-span-1 lg:p-1'>
-        <Card className='flex basis-2/12 flex-col justify-center lg:p-2'>
-          <CardHeader className='lg:p-0.5'>
-            <p>Modelo:</p>
+        <Card className='flex  flex-col '>
+          <CardHeader className='flex gap-3'>
+            <p>Selecciona un modelo de IA:</p>
           </CardHeader>
-          <Dropdown
-            aria-label='Menu de selección para modelo de IA'
-            buttonVariant='bordered'
-            buttonClassName='capitalize w-full lg:text-left'
-            items={dropdownItems}
+
+          <Select
+            className='max-w-xs p-3'
+            label='Modelo de IA'
+            defaultSelectedKeys={["cat"]}
+            placeholder='Selecciona un modelo de IA'
             selectedKeys={selectedKeys}
-            selectionMode='single'
+            startContent={<RobotIcon />}
             onSelectionChange={setSelectedKeys as () => void}
-            dropdownMenuClasses='text-left'
-          ></Dropdown>
+          >
+            {dropdownItems.map(item => (
+              <SelectItem key={item.key}>{item.label}</SelectItem>
+            ))}
+          </Select>
         </Card>
 
-        <Card className='flex basis-2/12 flex-col justify-center lg:p-2'>
-          <Slider
-            label='Tokens'
-            step={1}
-            minValue={100}
-            maxValue={1024}
-            value={sliderValue}
-            onChange={setSliderValue as () => void}
-          />
+        <Card className='flex  flex-col justify-center lg:p-2'>
+          <CardHeader className='flex flex-col'>
+            <Slider
+              label='Tokens'
+              step={1}
+              minValue={100}
+              maxValue={1024}
+              value={sliderValue}
+              onChange={setSliderValue as () => void}
+              className='pt-2'
+              classNames={{
+                base: "max-w-md gap-3",
+                filler: "bg-gradient-to-r from-teal-100 to-teal-500",
+                track: "border-s-teal-100",
+              }}
+              renderThumb={props => (
+                <div
+                  {...props}
+                  className='dark:border-default-00/50 group top-1/2 cursor-grab rounded-full border-small border-default-100 bg-background p-1 shadow-medium data-[dragging=true]:cursor-grabbing'
+                >
+                  <span className='block h-5 w-5 rounded-full bg-gradient-to-br from-teal-100 to-teal-500 shadow-small transition-transform group-data-[dragging=true]:scale-80' />
+                </div>
+              )}
+            />
+          </CardHeader>
+          <CardFooter>
+            <div className='flex gap-1'>
+              <p className=' text-white-400 text-small'>
+                Fragmentos de palabras a generar
+              </p>
+            </div>
+          </CardFooter>
         </Card>
 
         <TextArea
-          className='basis-5/12'
+          className='basis-3/12'
           value={textAreaValue}
           minRows={7}
           maxRows={8}
@@ -265,14 +337,27 @@ export default function Playground() {
           errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
         />
 
-        <Dropzone
-          className='basis-3/12'
-          uppy={uppy}
-          theme='dark'
-          showProgressDetails
-          width='100%'
-          height='100%'
-        />
+        <div>
+          <Dropzone
+            className='basis-3/12'
+            uppy={uppy}
+            theme='dark'
+            showProgressDetails
+            width='100%'
+            height='100%'
+          />
+        </div>
+
+        <div className='flex flex-col'>
+          <button
+            type='button'
+            className='inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-green-400 to-blue-600 px-5 py-2.5  text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800'
+          >
+            <WandMagicIcon />
+
+            <span className='ml-2'>Generar Imagen</span>
+          </button>
+        </div>
       </div>
     </div>
   );

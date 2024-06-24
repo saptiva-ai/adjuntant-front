@@ -1,4 +1,4 @@
-import { Textarea as NextUiTextArea, TextAreaProps } from "@nextui-org/react"
+import { Textarea as NextUiTextArea, TextAreaProps } from "@nextui-org/react";
 
 /**
  *
@@ -20,5 +20,5 @@ export default function TextArea(
     | "minRows"
   >,
 ) {
-  return <NextUiTextArea {...props} />
+  return <NextUiTextArea {...props} />;
 }
