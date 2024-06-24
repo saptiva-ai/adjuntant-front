@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import * as R from "ramda"
+import * as R from "ramda";
 import {
   Button as NextUiButton,
   ButtonProps as NextUiButtonProps,
-} from "@nextui-org/react"
-import React, { useState } from "react"
-import clsx from "clsx"
+} from "@nextui-org/react";
+import React, { useState } from "react";
+import clsx from "clsx";
 
 type ButtonProps = {
-  className?: string
+  className?: string;
   isPressedClasses?: {
-    true: string
-    false: string
-  }
-  isHoveredChildren: () => React.ReactNode
-  children: React.ReactNode
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
-  isDisabledClass?: string
-} & Pick<NextUiButtonProps, "variant" | "size" | "isIconOnly" | "isDisabled">
+    true: string;
+    false: string;
+  };
+  isHoveredChildren: () => React.ReactNode;
+  children: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  isDisabledClass?: string;
+} & Pick<NextUiButtonProps, "variant" | "size" | "isIconOnly" | "isDisabled">;
 
 /**
  * @link https://heroicons.com/outline
@@ -35,51 +35,51 @@ export default function Button({
   isDisabled,
   isDisabledClass,
 }: ButtonProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isPressedClass, setIsPressed] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressedClass, setIsPressed] = useState(false);
 
   const iconClasses = clsx(
     className,
     isDisabled && isDisabledClass,
     !isPressedClass && isPressedClasses?.false,
     isPressedClass && isPressedClasses?.true,
-  )
+  );
   const buttonOnClick: React.MouseEventHandler<HTMLButtonElement> = event => {
-    if (isDisabled) return
-    if (!onClick) return
+    if (isDisabled) return;
+    if (!onClick) return;
 
-    onClick(event)
-  }
+    onClick(event);
+  };
   const buttonOnMouseEnter: React.MouseEventHandler<HTMLButtonElement> = () => {
-    if (isDisabled) return
+    if (isDisabled) return;
 
-    setIsHovered(true)
-  }
+    setIsHovered(true);
+  };
   const buttonOnMouseLeave: React.MouseEventHandler<HTMLButtonElement> = () => {
-    if (isDisabled) return
+    if (isDisabled) return;
 
-    setIsHovered(false)
-  }
+    setIsHovered(false);
+  };
   const buttonOnPressStart = () => {
-    if (isDisabled) return
+    if (isDisabled) return;
 
-    setIsPressed(true)
-  }
+    setIsPressed(true);
+  };
   const buttonOnMouseEnd = () => {
-    if (isDisabled) return
+    if (isDisabled) return;
 
-    setIsPressed(false)
-  }
+    setIsPressed(false);
+  };
   const getIcon = () => {
     if (R.isNil(isHoveredChildren))
-      return <div className={`${iconClasses}`}>{children}</div>
+      return <div className={`${iconClasses}`}>{children}</div>;
 
     if (isHovered) {
-      return <div className={iconClasses}>{isHoveredChildren()}</div>
+      return <div className={iconClasses}>{isHoveredChildren()}</div>;
     }
 
-    return <div className={`${iconClasses}`}>{children}</div>
-  }
+    return <div className={`${iconClasses}`}>{children}</div>;
+  };
 
   return (
     <NextUiButton
@@ -95,5 +95,5 @@ export default function Button({
     >
       {getIcon()}
     </NextUiButton>
-  )
+  );
 }

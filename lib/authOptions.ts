@@ -4,9 +4,6 @@ import { NextAuthOptions } from "next-auth";
 import axios from "axios";
 
 export const authOptions: NextAuthOptions = {
-  pages: {
-    signIn: "/login",
-  },
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
@@ -33,7 +30,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,

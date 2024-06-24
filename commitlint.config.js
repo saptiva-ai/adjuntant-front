@@ -19,7 +19,7 @@ module.exports = {
         "lint",
         "config",
         "iac",
-        "uiux"
+        "uiux",
       ],
     ],
   },

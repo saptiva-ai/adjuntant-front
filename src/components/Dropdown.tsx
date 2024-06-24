@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Button,
@@ -8,19 +8,19 @@ import {
   ButtonProps as NextUiButtonProps,
   Dropdown as NextUiDropdown,
   DropdownMenuProps as NextUiDropdownMenuProps,
-} from "@nextui-org/react"
-import { useMemo } from "react"
+} from "@nextui-org/react";
+import { useMemo } from "react";
 
 type Item = {
-  key: string
-  label: string
-}
+  key: string;
+  label: string;
+};
 
 type DropdownProps = {
-  items: Item[]
-  buttonClassName?: string
-  buttonVariant?: NextUiButtonProps["variant"]
-  dropdownMenuClasses?: string
+  items: Item[];
+  buttonClassName?: string;
+  buttonVariant?: NextUiButtonProps["variant"];
+  dropdownMenuClasses?: string;
 } & Pick<
   NextUiDropdownMenuProps,
   | "selectedKeys"
@@ -28,7 +28,7 @@ type DropdownProps = {
   | "aria-label"
   | "variant"
   | "selectionMode"
->
+>;
 export default function Dropdown(props: DropdownProps) {
   const {
     "aria-label": ariaLabel,
@@ -40,11 +40,11 @@ export default function Dropdown(props: DropdownProps) {
     buttonClassName,
     buttonVariant = "bordered",
     dropdownMenuClasses,
-  } = props
+  } = props;
   const selectedKey = useMemo(
     () => Array.from(selectedKeys as unknown[]).join(", "),
     [selectedKeys],
-  )
+  );
 
   return (
     <NextUiDropdown>
@@ -66,5 +66,5 @@ export default function Dropdown(props: DropdownProps) {
         {item => <DropdownItem key={item.key}>{item.label}</DropdownItem>}
       </DropdownMenu>
     </NextUiDropdown>
-  )
+  );
 }

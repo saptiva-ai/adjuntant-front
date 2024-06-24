@@ -2,10 +2,10 @@ import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import Providers from "../../(lab)/lab/providers";
 import SessionWrapper from "@/components/SessionWrapper";
+import { authOptions } from "../../../../lib/authOptions";
 import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { authOptions } from "../../../../lib/authOptions";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +24,7 @@ export default async function RootLayout({
   const path = headerList.get("x-forwarded-path");
 
   if (!session) {
-    redirect("/login?redirect=" + path);
+    redirect(`/login?redirect=${path}`);
   }
 
   return (

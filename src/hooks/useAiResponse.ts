@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useEffect } from 'react';
+import axios from "axios";
+import { useEffect } from "react";
 
 type AiResponse = {
   response: string;
@@ -27,7 +27,7 @@ const fetcherWithArgs = async ({
     newTokens,
     sysPrompt,
     userEmail,
-    userMessage,    
+    userMessage,
   });
   return response.data;
 };
@@ -38,17 +38,17 @@ export default function useAiResponse({
   shouldFetch,
   sysPrompt,
   userEmail,
-  userMessage,  
+  userMessage,
   onFetchedSuccess,
   onFetchError,
 }: {
   modelName: string;
   newTokens: number;
   shouldFetch: boolean;
-  sysPrompt: string,
+  sysPrompt: string;
   userEmail: string;
   userMessage: string;
-  
+
   onFetchedSuccess: (response: string) => void;
   onFetchError: (error: unknown) => void;
 }): void {
@@ -60,7 +60,7 @@ export default function useAiResponse({
             modelName,
             newTokens,
             sysPrompt,
-            url: 'http://44.211.22.3:8000/api/chat',
+            url: "http://44.211.22.3:8000/api/chat",
             userEmail,
             userMessage,
           });
@@ -72,5 +72,14 @@ export default function useAiResponse({
     };
 
     fetchData();
-  }, [shouldFetch, userMessage, userEmail, modelName, newTokens, sysPrompt, onFetchedSuccess, onFetchError]);
+  }, [
+    shouldFetch,
+    userMessage,
+    userEmail,
+    modelName,
+    newTokens,
+    sysPrompt,
+    onFetchedSuccess,
+    onFetchError,
+  ]);
 }

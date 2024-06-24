@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss"
-import { nextui } from "@nextui-org/react"
+import type { Config } from "tailwindcss";
+import { nextui } from "@nextui-org/react";
 
 const config: Config = {
   content: [
@@ -17,10 +17,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        saptivaGreen: '#4ef7d1',
+        saptivaGreen: "#4ef7d1",
       },
     },
   },
-}
+};
 
-export default config
+export default config;

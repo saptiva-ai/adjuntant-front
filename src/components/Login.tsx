@@ -1,18 +1,13 @@
 "use client";
 
-import React, {
-  FormEventHandler,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { useRouter } from "next/navigation";
 
 library.add(faGoogle, faGithub, faCircleExclamation);
 
@@ -41,8 +36,8 @@ const Login = () => {
     async (provider: any) => {
       try {
         const response = await signIn(provider, {
-          redirect: false,
           callbackUrl: redirect ? `${redirect}` : "/lab/toolhub",
+          redirect: false,
         });
 
         if (response?.error) {
@@ -60,11 +55,12 @@ const Login = () => {
 
   return (
     <div className='w-full max-w-sm rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-800 dark:bg-gray-900 sm:p-6 md:p-8'>
-      <img
+      <Image
         className='mx-auto items-center justify-center'
         src='/img/saptiva-t.png'
         alt='saptiva'
         width={200}
+        height={300}
       />
       <form className='space-y-6' action='#'>
         <h5 className='text-center text-xl font-medium text-gray-900 dark:text-white'>
@@ -88,6 +84,7 @@ const Login = () => {
         <button
           onClick={() => signIn("github")}
           type='button'
+          disabled={true}
           className='mb-2 me-2 inline-flex w-full items-center rounded-lg bg-[#24292F] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#24292F]/90 focus:outline-none focus:ring-4 focus:ring-[#24292F]/50 dark:hover:bg-[#050708]/30 dark:focus:ring-gray-500'
         >
           <FontAwesomeIcon
