@@ -17,11 +17,18 @@ import TextArea from "@/components/TextArea"
 import Uppy from "@uppy/core"
 // @ts-ignore
 import UppySpanishLocale from "@uppy/locales/lib/es_ES.js"
+import axios from 'axios';
 import useAiResponse from "@/hooks/useAiResponse"
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid"
 
-const maxFileSize = 1000000
+const maxFileSize = 10485760;
+
+const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
+  const base64Buffer = Buffer.from(arrayBuffer).toString('base64');
+  const response = await axios.post('http://localhost:3000/api/extract-text', { fileBuffer: base64Buffer });
+  return response.data.text;
+};
 
 export default function Playground() {
   const { data: session } = useSession(); 
@@ -32,14 +39,14 @@ export default function Playground() {
   const [textAreaValue, setTextAreaValue] = useState("")
   const [sliderValue, setSliderValue] = useState(256)
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false)
-  const [file, setFile] = useState<File | null>(null);
-  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
+  const [fileBuffer, setFileBuffer] = useState<ArrayBuffer | null>(null);
+  const [pdfText, setPdfText] = useState<string>('');
   const [uppy] = useState(
     () =>
       new Uppy({
         locale: UppySpanishLocale,
-      }),
-  )
+      })
+  );
   const email = session?.user.email ?? "";
 
   useEffect(() => {
@@ -49,20 +56,27 @@ export default function Playground() {
         maxFileSize,
         maxNumberOfFiles: 1,
       },
-    })
-
-    uppy.on('file-added', (file) => {
-      if (file.data instanceof Blob) {
-        // Convertir Blob a File
-        const newFile = new File([file.data], file.name, { type: file.type });
-        setFile(newFile);
-      } else {
-        setFile(file.data as File);
-      }
-      file.data.arrayBuffer().then(setFileBuffer);
+    });
+    uppy.on("file-added", (file) => {
+      file.data.arrayBuffer().then((buffer) => {
+        setFileBuffer(buffer);
+      });
     });
   }, [uppy]);
 
+  useEffect(() => {
+    if (fileBuffer) {
+      (async () => {
+        try {
+          const text = await extractTextFromPDF(fileBuffer);
+          setPdfText(text);
+        } catch (error) {
+          // console.error("Error extracting text from PDF", error);
+        }
+      })();
+    }
+  }, [fileBuffer]);
+  
   const dropdownItems = [
     {
       key: "Mistral 7B",
@@ -96,7 +110,6 @@ export default function Playground() {
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars
 
   useAiResponse({
-    file: file || undefined,
     modelName: selectedValueRef.current,
     newTokens: sliderValue,
     onFetchError: () => {
@@ -111,18 +124,19 @@ export default function Playground() {
       ]);
     },
     onFetchedSuccess: (response: string) => {
-    setChatWindowMsgIsLoading(false);
-    setMessages(prevMsgs => [
-      ...prevMsgs,
-      { 
-        id: uuidv4(), 
-        role: "ai", 
-        text: response 
-      },
-    ]);
-  },
+      setChatWindowMsgIsLoading(false);
+      setMessages(prevMsgs => [
+        ...prevMsgs,
+        {
+          id: uuidv4(),
+          role: "ai",
+          text: response,
+        },
+      ]);
+    },
     shouldFetch: chatWindowMsgIsLoading,
-    sysPrompt:textAreaValue,
+    sysPrompt: textAreaValue,
+    text: pdfText,
     userEmail: email,
     userMessage: query,
   });
@@ -276,12 +290,12 @@ export default function Playground() {
         />
 
         <Dropzone
-          className='basis-3/12'
+          className="basis-3/12"
           uppy={uppy}
-          theme='dark'
+          theme="dark"
           showProgressDetails
-          width='100%'
-          height='100%'
+          width="100%"
+          height="100%"
         />
       </div>
     </div>
