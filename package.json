@@ -8,9 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky || true",
-    "commit": "commit"
+    "commit": "commit",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@nextui-org/react": "^2.3.6",
     "@types/ramda": "^0.30.0",
     "@uppy/core": "^3.11.3",

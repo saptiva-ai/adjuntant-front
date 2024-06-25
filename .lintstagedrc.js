@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require("path");
 
 /**
  *
@@ -6,11 +6,11 @@ const path = require('path')
  * @returns
  * @link https://nextjs.org/docs/app/building-your-application/configuring/eslint#lint-staged
  */
-const buildEslintCommand = (filenames) =>
+const buildEslintCommand = filenames =>
   `next lint --fix --file ${filenames
-    .map((f) => path.relative(process.cwd(), f))
-    .join(' --file ')}`
+    .map(f => path.relative(process.cwd(), f))
+    .join(" --file ")}`;
 
 module.exports = {
-  '*.{js,jsx,ts,tsx}': [buildEslintCommand],
-}
+  "*.{js,jsx,ts,tsx}": [buildEslintCommand],
+};

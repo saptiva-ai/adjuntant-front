@@ -1,33 +1,38 @@
-import GithubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
-import { NextAuthOptions } from "next-auth"
+import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import { NextAuthOptions } from "next-auth";
 import axios from "axios";
 
-
 export const authOptions: NextAuthOptions = {
-    callbacks: {
-        async jwt({ token, account, profile }) {
-          if (account && profile) {
-            try {
-              const response = await axios.post("http://44.211.22.3:8000/auth/google", {
-                token: account.id_token,
-              });
-    
-              if (response.status === 200) {
-                token.accessToken = response.data.access_token;
-              } else {
-                // console.error("Error response from FastAPI:", response);
-              }
-            } catch (error) {
-              // console.error("Error sending token to FastAPI:", error);
-            }
+  callbacks: {
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
+        try {
+          const response = await axios.post(
+            "http://44.211.22.3:8000/auth/google",
+            {
+              token: account.id_token,
+            },
+          );
+
+          if (response.status === 200) {
+            token.accessToken = response.data.access_token;
+          } else {
+            // console.error("Error response from FastAPI:", response);
           }
-          return token;
-        },
-        async session({ session, token }) {
-          return session;
-        },
-      },
+        } catch (error) {
+          // console.error("Error sending token to FastAPI:", error);
+        }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      return session;
+    },
+  },
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,

@@ -12,8 +12,6 @@ type DashboardProps = {
 /**
  * @link https://uppy.io/docs/react/
  */
-const Dropzone: React.FC<DashboardProps> = ({ ...dashboardProps }) => {
+export default function Dropzone(dashboardProps: DashboardProps) {
   return <Dashboard {...dashboardProps} />;
-};
-
-export default Dropzone;
+}

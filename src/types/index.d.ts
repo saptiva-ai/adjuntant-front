@@ -1,5 +1,4 @@
 export type DropdownItem = {
-    key: string;
-    label: string;
-  };
-  
+  key: string;
+  label: string;
+};

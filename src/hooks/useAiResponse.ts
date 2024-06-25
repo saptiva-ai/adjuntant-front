@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useEffect } from 'react';
+import axios from "axios";
+import { useEffect } from "react";
 
 type AiResponse = {
   response: string;

@@ -1,24 +1,14 @@
-import { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { getToken } from 'next-auth/jwt'
+import { type NextRequest, NextResponse } from "next/server";
 
-const middleware = async (req: NextRequest) => {
-  const session = await getToken({ req, secret: process.env.SECRET });
-
-  if (!session) {
-    const requestPage = req.nextUrl.pathname;
-    const url = req.nextUrl.clone();
-    url.pathname = `/login`;
-    url.search = `p=${requestPage}`;
-
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
-}
-
-export { middleware }
+export const middleware = async function middleware(req: NextRequest) {
+  return NextResponse.next({
+    headers: {
+      ...req.headers,
+      "x-forwarded-path": req.nextUrl.pathname,
+    },
+  });
+};
 
 export const config = {
-  matcher: '/toolhub'
-}
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
