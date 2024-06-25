@@ -27,16 +27,20 @@ import WandMagicIcon from "@/svg/Wand_Magic_Icon/Wand_Magic_Icon";
 // @ts-ignore
 // eslint-disable-next-line sort-imports
 import UppySpanishLocale from "@uppy/locales/lib/es_ES.js";
-import axios from 'axios';
+import axios from "axios";
 import useAiResponse from "@/hooks/useAiResponse";
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 
 const maxFileSize = 1000000;
 
-const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
-  const base64Buffer = Buffer.from(arrayBuffer).toString('base64');
-  const response = await axios.post('http://localhost:3000/api/extract-text', { fileBuffer: base64Buffer });
+const extractTextFromPDF = async (
+  arrayBuffer: ArrayBuffer,
+): Promise<string> => {
+  const base64Buffer = Buffer.from(arrayBuffer).toString("base64");
+  const response = await axios.post("http://localhost:3000/api/extract-text", {
+    fileBuffer: base64Buffer,
+  });
   return response.data.text;
 };
 
@@ -50,7 +54,7 @@ export default function Playground() {
   const [sliderValue, setSliderValue] = useState(256);
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false);
   const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
-  const [pdfText, setPdfText] = useState<string>('');
+  const [pdfText, setPdfText] = useState<string>("");
   const [uppy] = useState(
     () =>
       new Uppy({
@@ -67,8 +71,8 @@ export default function Playground() {
         maxNumberOfFiles: 1,
       },
     });
-    uppy.on("file-added", (file) => {
-      file.data.arrayBuffer().then((buffer) => {
+    uppy.on("file-added", file => {
+      file.data.arrayBuffer().then(buffer => {
         setFileBuffer(buffer);
       });
     });
@@ -152,7 +156,6 @@ export default function Playground() {
     userEmail: email,
     userMessage: query,
   });
-
 
   const sendMsg = async (text: string) => {
     if (inputIsDisabled || buttonIsDisabled || textAreaIsInvalid) return;
