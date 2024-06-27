@@ -65,7 +65,7 @@ export default function useAiResponse({
             newTokens,
             sysPrompt,
             text,
-            url: process.env.NEXT_PUBLIC_CHAT_API as string,
+            url: `${process.env.NEXT_PUBLIC_CHAT_API}/api/chat`,
             userEmail,
             userMessage,
           });

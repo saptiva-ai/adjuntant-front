@@ -18,6 +18,9 @@ const Login = () => {
   const [redirect, setRedirect] = useState<string>(null!);
   const [error, setError] = useState<boolean | false>(false);
 
+  // eslint-disable-next-line no-console
+  console.log("account", process.env.NEXT_PUBLIC_CHAT_API);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     const redirectUrl = url.searchParams.get("redirect") || "";

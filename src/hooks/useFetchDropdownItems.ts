@@ -13,7 +13,7 @@ const useFetchDropdownItems = () => {
     const fetchModels = async () => {
       try {
         const response = await axios.get(
-          "http://44.211.22.3:8000/api/models_available",
+          `${process.env.NEXT_PUBLIC_CHAT_API}/api/models_available`,
         );
         const models = response.data.models;
         const formattedItems = models.map((model: string) => ({
