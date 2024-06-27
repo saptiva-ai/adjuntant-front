@@ -1,14 +1,9 @@
 "use client";
 
-import Dropzone from "@/components/Dropzone";
-import Uppy from "@uppy/core";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function App() {
-  const [uppy] = useState(() => new Uppy());
-  return (
-    <div>
-      <Dropzone uppy={uppy}></Dropzone>
-    </div>
-  );
+  redirect("/login?redirect=/lab/toolhub");
+  return <div></div>;
 }

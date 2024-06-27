@@ -65,7 +65,7 @@ export default function useAiResponse({
             newTokens,
             sysPrompt,
             text,
-            url: API_BACKEND_URL,
+            url: process.env.NEXT_PUBLIC_CHAT_API as string,
             userEmail,
             userMessage,
           });
@@ -77,5 +77,15 @@ export default function useAiResponse({
     };
 
     fetchData();
-  }, [shouldFetch, text, userEmail, userMessage, modelName, sysPrompt, newTokens, onFetchedSuccess, onFetchError]);
+  }, [
+    shouldFetch,
+    text,
+    userEmail,
+    userMessage,
+    modelName,
+    sysPrompt,
+    newTokens,
+    onFetchedSuccess,
+    onFetchError,
+  ]);
 }

@@ -24,7 +24,7 @@ export default async function RootLayout({
   const path = headerList.get("x-forwarded-path");
 
   if (!session) {
-    redirect(`/login?redirect=${path}`);
+    redirect(`/login?redirect=${path || "/lab/toolhub"}`);
   }
 
   return (

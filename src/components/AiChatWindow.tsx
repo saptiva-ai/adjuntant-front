@@ -80,7 +80,9 @@ export default function AiChatWindow({
                 </div>
                 <div className='flex-2 text-justify'>
                   <div className='leading-1.5  flex w-full flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
-                    <p className={msgClasses}>{msg.text}</p>
+                    <p className={msgClasses} dir='ltr'>
+                      {msg.text}
+                    </p>
                   </div>
                 </div>
               </div>
