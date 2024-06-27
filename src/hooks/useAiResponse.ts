@@ -65,7 +65,7 @@ export default function useAiResponse({
             newTokens,
             sysPrompt,
             text,
-            url: 'http://44.211.22.3:8000/api/chat',
+            url: API_BACKEND_URL,
             userEmail,
             userMessage,
           });
