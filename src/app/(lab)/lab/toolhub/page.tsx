@@ -38,7 +38,7 @@ const extractTextFromPDF = async (
   arrayBuffer: ArrayBuffer,
 ): Promise<string> => {
   const base64Buffer = Buffer.from(arrayBuffer).toString("base64");
-  const response = await axios.post("http://localhost:3000/api/extract-text", {
+  const response = await axios.post("https://lab.saptiva.com/api/extract-text", {
     fileBuffer: base64Buffer,
   });
   return response.data.text;
