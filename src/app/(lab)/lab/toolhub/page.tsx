@@ -108,6 +108,10 @@ export default function Playground() {
       key: "Phi 3",
       label: "Phi 3",
     },
+    {
+      key: "Gemma 7B",
+      label: "Gemma 7B"
+    }
   ];
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
