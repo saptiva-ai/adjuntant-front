@@ -9,7 +9,7 @@ export const authOptions: NextAuthOptions = {
       if (account && profile) {
         try {
           const response = await axios.post(
-            "http://44.211.22.3:8000/auth/google",
+            `${process.env.NEXT_PUBLIC_CHAT_API}/auth/google`,
             {
               token: account.id_token,
             },
