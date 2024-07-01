@@ -179,13 +179,14 @@ export default function Playground() {
             <CardHeader>
               <div className='flex gap-3'>
                 <div className='flex-1 justify-items-center'>
-                  <Avatar
+                  {/* <Avatar
                     isBordered
                     showFallback
                     radius='full'
                     size='sm'
                     src='/img/logoVA.webp'
-                  />
+                    disableAnimation
+                  /> */}
                 </div>
                 <div className='flex-2 text-justify'>
                   <div className='leading-1.5 flex w-full  flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
@@ -201,13 +202,14 @@ export default function Playground() {
             <CardHeader>
               <div className='flex gap-3 '>
                 <div className='flex-1 justify-items-center'>
-                  <Avatar
+                  {/* <Avatar
                     isBordered
                     showFallback
                     radius='full'
                     size='sm'
                     src='/img/logoVA.webp'
-                  />
+                    disableAnimation
+                  /> */}
                 </div>
                 <div className='flex-2 text-justify'>
                   <div className='leading-1.5 flex w-full flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
