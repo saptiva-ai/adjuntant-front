@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, Card, CardHeader, Spinner } from "@nextui-org/react";
+import ChatBubble from "@/components/ChatBubble";
 import { Message } from "@/types/message";
 import isEven from "@/util/isEven";
 import { useEffect } from "react";
@@ -14,6 +15,8 @@ type ChatWindowProps = {
   cardClasses?: string;
   msgClasses?: string;
   aiProfilePicUrl: string;
+  profilePicUrl?: string;
+  fullName?: string;
   isLoadingResponse?: boolean;
   isLoadingContent?: () => React.ReactNode;
   iconSelect?: () => React.ReactNode;
@@ -28,6 +31,8 @@ export default function AiChatWindow({
   cardClasses,
   msgClasses,
   aiProfilePicUrl,
+  profilePicUrl,
+  fullName,
   isLoadingResponse = false,
   isLoadingContent = () => null,
 }: ChatWindowProps) {
@@ -48,45 +53,23 @@ export default function AiChatWindow({
       {msgsExists &&
         messages.map(msg =>
           msg.role === "ai" ? (
-            <CardHeader key={msg.id}>
-              <div className='flex gap-3'>
-                <div className='flex-1 justify-items-center'>
-                  <Avatar
-                    isBordered
-                    showFallback
-                    radius='full'
-                    size='sm'
-                    src={aiProfilePicUrl}
-                  />
-                </div>
-                <div className='flex-2 text-justify'>
-                  <div className='leading-1.5 flex w-full  flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
-                    <p className={msgClasses}>{msg.text}</p>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
+            <ChatBubble
+              key={msg.id}
+              user='AI'
+              message={msg.text}
+              dirChat='ltr'
+              dirMessage='ltr'
+              src={aiProfilePicUrl}
+            ></ChatBubble>
           ) : (
-            <CardHeader key={msg.id} dir='rtl'>
-              <div className='flex gap-3'>
-                <div className='flex-1 justify-items-center'>
-                  <Avatar
-                    isBordered
-                    showFallback
-                    radius='full'
-                    size='sm'
-                    src={undefined}
-                  />
-                </div>
-                <div className='flex-2 text-justify'>
-                  <div className='leading-1.5  flex w-full flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700'>
-                    <p className={msgClasses} dir='ltr'>
-                      {msg.text}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
+            <ChatBubble
+              key={msg.id}
+              user={fullName || "You"}
+              message={msg.text}
+              dirChat='rtl'
+              dirMessage='ltr'
+              src={profilePicUrl}
+            ></ChatBubble>
           ),
         )}
 
