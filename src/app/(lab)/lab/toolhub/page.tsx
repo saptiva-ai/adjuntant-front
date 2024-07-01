@@ -2,7 +2,6 @@
 
 import * as R from "ramda";
 import {
-  Avatar,
   Card,
   CardFooter,
   CardHeader,
@@ -37,7 +36,7 @@ import { v4 as uuidv4 } from "uuid";
 const extractTextFromPDF = async (file: File): Promise<string> => {
   const arrayBuffer = await file.arrayBuffer(); 
   const base64Buffer = Buffer.from(arrayBuffer).toString('base64');
-  const response = await axios.post("http://localhost:3000/api/extract-text", {
+  const response = await axios.post(process.env.NEXT_EXTRACT_TEXT_API as string, {
      fileBuffer: base64Buffer
     });
   return response.data.text;
@@ -56,6 +55,8 @@ export default function Playground() {
   const [file, setFile] = useState<File | null>(null);
   
   const email = session?.user.email ?? "";
+  const image = session?.user.image ?? "";
+  const fullName = session?.user.name ?? "";
 
   const handleFileAdded = useCallback((file: File) => {
     setFile(file);
