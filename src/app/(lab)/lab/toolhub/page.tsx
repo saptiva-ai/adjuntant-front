@@ -69,9 +69,6 @@ export default function Playground() {
   const image = session?.user.image ?? "";
   const fullName = session?.user.name ?? "";
 
-  // eslint-disable-next-line no-console
-  console.log("Sesssikon", session);
-
   useEffect(() => {
     uppy.setOptions({
       restrictions: {
