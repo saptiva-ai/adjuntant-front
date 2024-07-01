@@ -44,4 +44,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.SECRET,
+  session: {
+    maxAge: 300,
+    strategy: "jwt",
+  },
 };

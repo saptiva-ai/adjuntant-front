@@ -2,24 +2,19 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { signIn, useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 library.add(faGoogle, faGithub, faCircleExclamation);
 
 const Login = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-
   const [redirect, setRedirect] = useState<string>(null!);
   const [error, setError] = useState<boolean | false>(false);
-
-  // eslint-disable-next-line no-console
-  console.log("account", process.env.NEXT_PUBLIC_CHAT_API);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -29,11 +24,7 @@ const Login = () => {
     if (url.searchParams.get("error")) {
       setError(true);
     }
-
-    if (session) {
-      router.push("/lab/toolhub");
-    }
-  }, [session, router]);
+  }, []);
 
   const onSubmitProvider = useCallback(
     async (provider: any) => {

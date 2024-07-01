@@ -1,6 +1,19 @@
+import {
+  Avatar,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Link,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+} from "@nextui-org/react";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import Providers from "../../(lab)/lab/providers";
+import React from "react";
 import SessionWrapper from "@/components/SessionWrapper";
 import { authOptions } from "../../../../lib/authOptions";
 import { getServerSession } from "next-auth";
