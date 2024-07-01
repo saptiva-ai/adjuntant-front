@@ -9,10 +9,10 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import AiChatWindow from "@/components/AiChatWindow";
 import Button from "@/components/Button";
-import Dropzone from "@/components/Dropzone";
+import FileUploader from "@/components/FileUploader";
 import Input from "@/components/Input";
 import MailIconOutline from "@/svg/Mail_Icon/Mail_IconOutline";
 import MailIconSolid from "@/svg/Mail_Icon/Mail_IconSolid";
@@ -20,27 +20,25 @@ import { Message } from "@/types/message";
 import RobotIcon from "@/svg/RobotIcon/Robot_Icon";
 import Slider from "@/components/Slider";
 import Spinner from "@/components/Spinner";
+import TemplateCard from "@/components/TemplateCard";
 import TextArea from "@/components/TextArea";
-
-import Uppy from "@uppy/core";
 import WandMagicIcon from "@/svg/Wand_Magic_Icon/Wand_Magic_Icon";
 // @ts-ignore
 // eslint-disable-next-line sort-imports
-import UppySpanishLocale from "@uppy/locales/lib/es_ES.js";
 import axios from "axios";
+import { dropdownItems } from "@/data/dropdownItems";
+import { templates } from "@/data/templates";
 import useAiResponse from "@/hooks/useAiResponse";
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 
-const maxFileSize = 1000000;
 
-const extractTextFromPDF = async (
-  arrayBuffer: ArrayBuffer,
-): Promise<string> => {
-  const base64Buffer = Buffer.from(arrayBuffer).toString("base64");
-  const response = await axios.post("https://lab.saptiva.com/api/extract-text", {
-    fileBuffer: base64Buffer,
-  });
+const extractTextFromPDF = async (file: File): Promise<string> => {
+  const arrayBuffer = await file.arrayBuffer(); 
+  const base64Buffer = Buffer.from(arrayBuffer).toString('base64');
+  const response = await axios.post("http://localhost:3000/api/extract-text", {
+     fileBuffer: base64Buffer
+    });
   return response.data.text;
 };
 
@@ -53,66 +51,31 @@ export default function Playground() {
   const [textAreaValue, setTextAreaValue] = useState("");
   const [sliderValue, setSliderValue] = useState(256);
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false);
-  const [fileBuffer, setFileBuffer] = useState(new ArrayBuffer(maxFileSize));
   const [pdfText, setPdfText] = useState<string>("");
-  const [uppy] = useState(
-    () =>
-      new Uppy({
-        locale: UppySpanishLocale,
-      }),
-  );
+  const [file, setFile] = useState<File | null>(null);
+  
   const email = session?.user.email ?? "";
 
-  useEffect(() => {
-    uppy.setOptions({
-      restrictions: {
-        allowedFileTypes: [".pdf"],
-        maxFileSize,
-        maxNumberOfFiles: 1,
-      },
-    });
-    uppy.on("file-added", file => {
-      file.data.arrayBuffer().then(buffer => {
-        setFileBuffer(buffer);
-      });
-    });
-  }, [uppy]);
+  const handleFileAdded = useCallback((file: File) => {
+    setFile(file);
+  }, []);
+
+  const handleTemplateSelect = (content: string) => {
+    setTextAreaValue(content);
+  };
 
   useEffect(() => {
-    if (fileBuffer) {
+    if (file) {
       (async () => {
         try {
-          const text = await extractTextFromPDF(fileBuffer);
+          const text = await extractTextFromPDF(file);
           setPdfText(text);
         } catch (error) {
           // console.error("Error extracting text from PDF", error);
         }
       })();
     }
-  }, [fileBuffer]);
-
-  const dropdownItems = [
-    {
-      key: "Mistral 7B",
-      label: "Mistral 7B",
-    },
-    {
-      key: "LLaMa2 7B",
-      label: "LLaMa2 7B",
-    },
-    {
-      key: "LLaMa3 8B",
-      label: "LLaMa3 8B",
-    },
-    {
-      key: "Phi 3",
-      label: "Phi 3",
-    },
-    {
-      key: "Gemma 7B",
-      label: "Gemma 7B"
-    }
-  ];
+  }, [file]);
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
     new Set(["Mistral 7B"]),
@@ -126,7 +89,7 @@ export default function Playground() {
     }
   }, [selectedKeys]);
 
-  const maxTextAreaChars = 256;
+  const maxTextAreaChars = 1024;
   const textAreaIsInvalid = textAreaValue.length > maxTextAreaChars;
 
   useAiResponse({
@@ -354,27 +317,29 @@ export default function Playground() {
           </CardFooter>
         </Card>
 
-        <TextArea
-          className='basis-3/12'
-          value={textAreaValue}
-          minRows={7}
-          maxRows={8}
-          onValueChange={setTextAreaValue}
-          isInvalid={textAreaIsInvalid}
-          label='Instrucciones'
-          description='Ingresa instrucciones como contexto adicional'
-          errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
-        />
+        <div className="flex flex-col gap-1">
+          {templates.map((template) => (
+              <TemplateCard key={template.id} template={template} onSelect={handleTemplateSelect} />
+          ))}
+        </div>
 
-        <div>
-          <Dropzone
+        <div className="flex flex-col gap-2">
+          <TextArea
             className='basis-3/12'
-            uppy={uppy}
-            theme='dark'
-            showProgressDetails
-            width='100%'
-            height='100%'
+            value={textAreaValue}
+            minRows={3}
+            maxRows={4}
+            onValueChange={setTextAreaValue}
+            isInvalid={textAreaIsInvalid}
+            label='Instrucciones'
+            description='Ingresa instrucciones como contexto adicional'
+            errorMessage={`Las instrucciones deben ser de menos de ${maxTextAreaChars} carácteres`}
           />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <FileUploader onFileAdded={handleFileAdded} className="basis-3/12" />
+          <div className="flex-1 overflow-y-auto p-4"></div>
         </div>
 
         <div className='flex flex-col'>
