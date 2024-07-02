@@ -1,4 +1,3 @@
-import { Avatar } from "@nextui-org/react";
 import Image from "next/image";
 export default function ChatBubble({
   user,
@@ -16,12 +15,18 @@ export default function ChatBubble({
   src?: string;
 }) {
   return (
-    <div className='flex gap-2.5 p-2' dir={dirChat}>
-      <div className='w-10 flex-initial justify-items-center'>
-        <Avatar isBordered showFallback radius='full' size='sm' src={src} />
+    <div className='flex gap-2 p-2' dir={dirChat}>
+      <div className='min-w-[50px] flex-initial justify-items-center'>
+        <Image
+          src={src ?? ""}
+          alt='Chat Image'
+          className='h-10 w-10 rounded-full p-1 ring-2 ring-gray-300 dark:ring-gray-500'
+          width={40}
+          height={40}
+        />
       </div>
 
-      <div className='w-auto flex-initial text-justify'>
+      <div className='max-w-[1100px] flex-initial text-justify'>
         <div className='leading-1.5 flex w-full flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-3 dark:bg-gray-700'>
           <div className='mb-2 flex items-center space-x-2 rtl:space-x-reverse'>
             <span className='text-sm font-semibold text-gray-900 dark:text-white'>

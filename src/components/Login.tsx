@@ -50,7 +50,7 @@ const Login = () => {
   return (
     <div className='w-full max-w-sm rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-800 dark:bg-gray-900 sm:p-6 md:p-8'>
       <Image
-        className='mx-auto items-center justify-center'
+        className='mx-auto  items-center justify-center'
         src='/img/saptiva-t.png'
         alt='saptiva'
         width={200}

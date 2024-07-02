@@ -32,13 +32,15 @@ import useAiResponse from "@/hooks/useAiResponse";
 import { useSession } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 
-
 const extractTextFromPDF = async (file: File): Promise<string> => {
-  const arrayBuffer = await file.arrayBuffer(); 
-  const base64Buffer = Buffer.from(arrayBuffer).toString('base64');
-  const response = await axios.post(process.env.NEXT_EXTRACT_TEXT_API as string, {
-     fileBuffer: base64Buffer
-    });
+  const arrayBuffer = await file.arrayBuffer();
+  const base64Buffer = Buffer.from(arrayBuffer).toString("base64");
+  const response = await axios.post(
+    process.env.NEXT_EXTRACT_TEXT_API as string,
+    {
+      fileBuffer: base64Buffer,
+    },
+  );
   return response.data.text;
 };
 
@@ -53,7 +55,7 @@ export default function Playground() {
   const [chatWindowMsgIsLoading, setChatWindowMsgIsLoading] = useState(false);
   const [pdfText, setPdfText] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  
+
   const email = session?.user.email ?? "";
   const image = session?.user.image ?? "";
   const fullName = session?.user.name ?? "";
@@ -168,10 +170,10 @@ export default function Playground() {
   };
 
   return (
-    <div className='grid h-[92vh] lg:grid-cols-5 lg:gap-2 lg:p-2'>
-      <div className=' flex max-h-[90vh] flex-col gap-3 p-1 lg:col-span-4'>
+    <div className='grid h-[90vh]  lg:grid-cols-5 lg:gap-2  lg:p-2'>
+      <div className='flex  flex-col gap-3 p-1 lg:col-span-4'>
         <AiChatWindow
-          cardClasses='flex flex-col p-3 min-h-60   gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scroll-smooth scrollbar-track-gray-200 scrollbar-thumb-teal-400 hover:scrollbar-thumb-teal-500 active:scrollbar-thumb-teal-400 basis-11/12'
+          cardClasses='flex flex-col p-3 min-h-70   gap-1 overflow-auto overscroll-contain bg-gray-700/80 scrollbar scroll-smooth scrollbar-track-gray-200 scrollbar-thumb-teal-400 hover:scrollbar-thumb-teal-500 active:scrollbar-thumb-teal-400 basis-11/12'
           msgClasses='pt-1.5 text-small font-light leading-none text-default-600'
           aiProfilePicUrl='/img/logoVA.webp'
           profilePicUrl={image}
@@ -294,18 +296,11 @@ export default function Playground() {
           </CardFooter>
         </Card>
 
-        <div className="flex flex-col gap-1">
-          {templates.map((template) => (
-              <TemplateCard key={template.id} template={template} onSelect={handleTemplateSelect} />
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-2">
+        <div className='flex flex-col gap-2'>
           <TextArea
-            className='basis-3/12'
+            className='max-h-[600px] text-justify'
             value={textAreaValue}
             minRows={3}
-            maxRows={4}
             onValueChange={setTextAreaValue}
             isInvalid={textAreaIsInvalid}
             label='Instrucciones'
@@ -314,9 +309,21 @@ export default function Playground() {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <FileUploader onFileAdded={handleFileAdded} className="basis-3/12" />
-          <div className="flex-1 overflow-y-auto p-4"></div>
+        <div className='flex  justify-center gap-1'>
+          {templates.map(template => (
+            <TemplateCard
+              key={template.id}
+              template={template}
+              onSelect={handleTemplateSelect}
+            />
+          ))}
+        </div>
+
+        <div className='flex flex-col gap-2'>
+          <FileUploader
+            onFileAdded={handleFileAdded}
+            className='flex  flex-col gap-2'
+          />
         </div>
 
         <div className='flex flex-col'>

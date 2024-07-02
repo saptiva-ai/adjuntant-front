@@ -11,14 +11,13 @@ type TemplateCardProps = {
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelect }) => {
   return (
-    <Card className="mb-0.5 p-1">
-      <CardHeader className="p-0.5 flex justify-between items-center">
-        <h4 className="text-xs font-medium">{template.title}</h4>
-        <Button size="sm" className="ml-1" onClick={() => onSelect(template.content)}>
-          Seleccionar
-        </Button>
-      </CardHeader>
-    </Card>
+    <span
+      key={template.id}
+      className='me-2 rounded bg-gray-100 px-2.5 py-0.5 text-center text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+      onClick={() => onSelect(template.content)}
+    >
+      {template.title}
+    </span>
   );
 };
 

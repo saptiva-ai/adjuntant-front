@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Card, CardHeader, Spinner } from "@nextui-org/react";
+import { Avatar, Card } from "@nextui-org/react";
 import ChatBubble from "@/components/ChatBubble";
 import { Message } from "@/types/message";
 import isEven from "@/util/isEven";
